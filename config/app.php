@@ -159,7 +159,8 @@ return [
         /*
          * Package Service Providers...
          */
-
+        // AMA-dribbble service
+         \SocialiteProviders\Manager\ServiceProvider::class, // add
         /*
          * Application Service Providers...
          */
