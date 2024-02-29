@@ -1,5 +1,6 @@
 <?php
 
+// namespace App\Http\Controllers;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,5 +28,29 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+//-----------------------------------------------------------------------------------------------------------
+// Route::prefix("main_projects")->group(function () {
+//     Route::resource('/', MainProjectController::class);
+//     Route::controller(MainProjectController::class)->group(function () {
+//         Route::get('/show', 'show')->name('users.show');
+//     });
+// });
+
+//______________________________________________________________________________________________________________________
+
+
+//-----------------------------------------------------------------------------------------------------------
+// Route::group(['prifex' => 'main_projects', 'as' => 'main_projects.' , 'namespace' => 'App\Http\Controllers'], function() {
+Route::group(['prifex' => 'main_projects', 'as' => 'main_projects.'], function() {
+    Route::resource('/main_projects', 'MainProjectController');
+    // Route::get('/', 'yes')->name('yes');
+});
+
+//______________________________________________________________________________________________________________________
+
+
+
 
 require __DIR__.'/auth.php';

@@ -20,6 +20,11 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/dashboard';
 
     /**
+     * AMA-Controllers Namespace
+     */
+    protected $namespace = 'App\Http\Controllers';
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
@@ -34,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('web')
+                // AMA-routes controller namespace
+                ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
         });
     }
