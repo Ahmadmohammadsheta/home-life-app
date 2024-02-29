@@ -1,8 +1,8 @@
 <?php
 
 // namespace App\Http\Controllers;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+require __DIR__.'/auth.php';
+
 
 //-----------------------------------------------------------------------------------------------------------
 // Route::prefix("main_projects")->group(function () {
@@ -52,5 +54,12 @@ Route::group(['prifex' => 'main_projects', 'as' => 'main_projects.'], function()
 
 
 
+//-----------------------------------------------------------------------------------------------------------
+Route::name('socialite.')->controller(App\Http\Controllers\SocialiteController::class)->group(function () {
+    Route::get('{provider}/login', 'login')->name('login');
+    Route::get('{provider}/redirect', 'redirect')->name('redirect');
+});
+//______________________________________________________________________________________________________________________
 
-require __DIR__.'/auth.php';
+
+
