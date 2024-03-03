@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\packeges;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\LoginNotification;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
@@ -23,7 +25,7 @@ class SocialiteController extends Controller
     public function redirect($provider)
     {
         $socialiteUser = Socialite::driver($provider)->user();
-        
+
         $user = User::updateOrCreate([
             'provider' => $provider,
             'provider_id' => $socialiteUser->getId(),
@@ -34,6 +36,9 @@ class SocialiteController extends Controller
 
         // auth user
         Auth::login($user, true);
+
+        // AMA-login notification
+        $user->notify(new LoginNotification());
 
         // redirect to dashboard
         return to_route('dashboard');
