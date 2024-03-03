@@ -51,5 +51,15 @@ Route::group(['prifex' => 'main_projects', 'as' => 'main_projects.'], function()
 
 //______________________________________________________________________________________________________________________
 
-
+    //-----------------------------------------------------------------------------------------------------------
+    /**
+     * Admin pages routes
+     * It must be in the end of all routes
+     */
+    Route::prefix("")->group(function(){
+        Route::controller(App\Http\Controllers\AdminController::class)->group(function () {
+            Route::get('/{page}', 'index');
+        });
+    });
+    //______________________________________________________________________________________________________________________
 
