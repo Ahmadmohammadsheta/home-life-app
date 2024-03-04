@@ -11,17 +11,34 @@
 						<div class="app-sidebar__toggle" data-toggle="sidebar">
 							<a class="open-toggle" href="#"><i class="header-icon fe fe-align-left" ></i></a>
 							<a class="close-toggle" href="#"><i class="header-icons fe fe-x"></i></a>
-						</div>
+						</div>          <!-- Settings Dropdown -->
+                        <div class="sm:flex sm:items-center sm:ms-6">
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        </div>
 						<div class="main-header-center mr-3 d-sm-none d-md-none d-lg-block">
 							<input class="form-control" placeholder="Search for anything..." type="search"> <button class="btn"><i class="fas fa-search d-none d-md-block"></i></button>
 						</div>
+                        <div class="sm:flex sm:items-center sm:ms-6">
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ Auth::user()->name }}
+                            </x-dropdown-link>
+                        </div> 
 					</div>
 					<div class="main-header-right">
 						<ul class="nav">
 							<li class="">
 								<div class="dropdown  nav-itemd-none d-md-flex">
 									<a href="#" class="d-flex  nav-item nav-link pl-0 country-flag1" data-toggle="dropdown" aria-expanded="false">
-										<span class="avatar country-Flag mr-0 align-self-center bg-transparent"><img src="{{URL::asset('assets/img/flags/us_flag.jpg')}}" alt="img"></span>
+										<span class="avatar country-Flag mr-0 align-self-center bg-transparent"><img src="{{URL::asset('assets/img/flags/egy_flag.jpeg')}}" alt="img"></span>
 										<div class="my-auto">
 											<strong class="mr-2 ml-2 my-auto">English</strong>
 										</div>
@@ -254,17 +271,22 @@
 										<div class="d-flex wd-100p">
 											<div class="main-img-user"><img alt="" src="{{URL::asset('assets/img/faces/6.jpg')}}" class=""></div>
 											<div class="mr-3 my-auto">
-												<h6>Petey Cruiser</h6><span>Premium Member</span>
+												<h6>{{ auth()->user()->name }}</h6><span>{{ auth()->user()->email }}</span>
 											</div>
-										</div>
+										</div>ا
 									</div>
-									<a class="dropdown-item" href=""><i class="bx bx-user-circle"></i>Profile</a>
-									<a class="dropdown-item" href=""><i class="bx bx-cog"></i> Edit Profile</a>
-									<a class="dropdown-item" href=""><i class="bx bxs-inbox"></i>Inbox</a>
-									<a class="dropdown-item" href=""><i class="bx bx-envelope"></i>Messages</a>
-									<a class="dropdown-item" href=""><i class="bx bx-slider-alt"></i> Account Settings</a>
-									<a class="dropdown-item" href="{{ url('/' . $page='page-signin') }}"><i class="bx bx-log-out"></i> Sign Out</a>
-								</div>
+									<a class="dropdown-item" href=""><i class="bx bx-user-circle"></i>{{ __('Profile') }}</a>
+									<a class="dropdown-item" href=""><i class="bx bx-cog"></i> {{ __('Edit Profile') }}</a>
+									<a class="dropdown-item" href=""><i class="bx bxs-inbox"></i>{{ __('Inbox') }}</a>
+									<a class="dropdown-item" href=""><i class="bx bx-envelope"></i>{{ __('Messages') }}</a>
+									<a class="dropdown-item" href=""><i class="bx bx-slider-alt"></i> {{ __('Account Settings') }}</a>
+                                    {{-- <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
+                                        class="bx bx-log-out"></i>{{ __('logout') }}</a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                        </form> --}}
+                               </div>
 							</div>
 							<div class="dropdown main-header-message right-toggle">
 								<a class="nav-link pr-0" data-toggle="sidebar-left" data-target=".sidebar-left">
