@@ -15,13 +15,13 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/dashboard', function () {
-    $user = auth()->user();
-    $user->notify(new LoginNotification());
+Route::get('/', function () {
+    // $user = auth()->user(); // worked
+    // $user->notify(new LoginNotification());
     return view('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -49,6 +49,14 @@ Route::group(['prifex' => 'main_projects', 'as' => 'main_projects.'], function()
     // Route::get('/', 'yes')->name('yes');
 });
 
+//______________________________________________________________________________________________________________________
+
+//-----------------------------------------------------------------------------------------------------------
+Route::resource('/types', 'TypeController');
+//______________________________________________________________________________________________________________________
+
+//-----------------------------------------------------------------------------------------------------------
+Route::resource('/projects', 'ProjectController');
 //______________________________________________________________________________________________________________________
 
     //-----------------------------------------------------------------------------------------------------------
