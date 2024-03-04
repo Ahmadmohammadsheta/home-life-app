@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 Trait GetSqlDataTrait
 {
     /**
-     * get table name dynamically.
+     * 1- get table name dynamically.
      *
      */
     public function modelTableName(Model $model_object)
@@ -16,7 +16,7 @@ Trait GetSqlDataTrait
         return $table_name;
     }
     /**
-     * get table columns names dynamically.
+     * 2- get table columns names dynamically.
      *
      */
     public function tableColumnNames(Model $model_object)
@@ -26,7 +26,7 @@ Trait GetSqlDataTrait
     }
 
     /**
-     * filter table columns names
+     * 3- filter table columns names
      * if you want to prevent custom columns to show in the blade table file.
      *
      */
@@ -37,7 +37,7 @@ Trait GetSqlDataTrait
     }
 
     /**
-     * make the array key have the the columns names.
+     * 4- make the array key have the the columns names.
      * this to help you if you want to rename the column names in the blade table file.
      *
      */
