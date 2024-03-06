@@ -3,10 +3,7 @@
 @section('css')
 @endsection
 @section('title')
-    @php
-    $model = substr($tableName, 0, -1);
-    @endphp
-    <span class="text-muted mt-1 tx-30 mr-2 mb-0">{{ "Edit ".ucfirst($model) }}</span>
+    <span class="text-muted mt-1 tx-30 mr-2 mb-0">{{ "Edit ".ucfirst($modelObjectName) }}</span>
 @stop
 
 @section('page-header')
@@ -26,36 +23,47 @@
                     <div class="col-lg-12 col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route($tableName.'.update', [$model => $$model->id]) }}" method="POST" id="addForm">
+                                <form action="{{ route($tableName.'.update', [$modelObjectName => $$modelObjectName->id]) }}" method="POST" id="addForm">
                                     @csrf
                                     @method('PUT')
 
                                     <div class="form-group">
-                                        @foreach ($columns as $column)
+                                        @foreach ($columsWithDataTypes as $column)
 
                                         <label style="text-align: center important; display: inline-block" class="text-danger">{{ __(ucfirst($column['name'])) }}</label>
                                         @if ($column['type'] == "bigint")
                                             @if ((Str::contains($column['name'], '_id')))
                                             <select name="{{ $column['name'] }}" class="form-control SlectBox m-2">
                                                 <option class="text-center" value="" selected disabled>{{ __('Choose ').ucfirst(substr($column['name'], 0, -3)) }}</option>
-                                                @foreach (("App\Models\\".ucfirst(substr($column['name'], 0, -3)))::all() as $value)
-                                                @php
-                                                    $modelValue = $column['name'];
-                                                @endphp
-                                                <option value="{{ $value->id }}"
-                                                    {{ $value->id != $$model->$modelValue ?: 'selected' }}
-                                                    >{{ $value->name }}</option>
-                                                @endforeach
+                                                @if ($column['name'] == 'parent_id')
+                                                    @foreach (("App\Models\\".ucfirst($modelObjectName))::all() as $value)
+                                                    @php
+                                                        $modelObjectNameValue = $column['name'];
+                                                    @endphp
+                                                    <option value="{{ $value->id }}"
+                                                        {{ $value->id != $$modelObjectName->$modelObjectNameValue ?: 'selected' }}
+                                                        >{{ $value->name }}</option>
+                                                    @endforeach
+                                                @else
+                                                    @foreach (("App\Models\\".ucfirst(substr($column['name'], 0, -3)))::all() as $value)
+                                                    @php
+                                                        $modelObjectNameValue = $column['name'];
+                                                    @endphp
+                                                    <option value="{{ $value->id }}"
+                                                        {{ $value->id != $$modelObjectName->$modelObjectNameValue ?: 'selected' }}
+                                                        >{{ $value->name }}</option>
+                                                    @endforeach
+                                                @endif
                                             </select>
                                             @endif
                                         @elseif ($column['type'] == "varchar")
                                         @php
-                                            $modelValue = $column['name'];
+                                            $modelObjectNameValue = $column['name'];
                                         @endphp
                                             <input type="text"
                                             class="form-control m-2 @error($column['name']) is-invalid @enderror"
                                             name="{{ $column['name'] }}"
-                                            value="{{ $$model->$modelValue }}"
+                                            value="{{ $$modelObjectName->$modelObjectNameValue }}"
                                             required>
 
                                         @endif

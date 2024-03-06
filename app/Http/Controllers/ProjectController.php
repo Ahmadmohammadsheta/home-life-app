@@ -5,19 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Http\Traits\GetSqlDataTrait;
+use App\Http\Traits\SqlDataRetrievable;
 use Illuminate\Support\Facades\Schema;
 use App\Repository\ProjectRepositoryInterface;
 use App\Http\Resources\Project\ProjectResource;
 
 class ProjectController extends Controller
 {
-    use GetSqlDataTrait;
+    use SqlDataRetrievable;
     /**
      * Properties
      */
     public $projectRepository;
     public $tableName;
+    public $modelObjectName;
 
 
     /**
@@ -26,24 +27,21 @@ class ProjectController extends Controller
     public function __construct(ProjectRepositoryInterface $projectRepository) {
         $this->projectRepository = $projectRepository;
         $this->tableName = $this->modelTableName(new Project());
+        $this->modelObjectName = 'project';
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filter_column_names = $this->filteredTableColumnNames(new Project, ['updated_at']);
+        $filterColumnNames = $this->filteredTableColumnNames(new Project, ['updated_at']);
         $columns = $this->columnKeysNamesEqualColumnNames(new Project, ['updated_at']);
-        $columns['type_id'] = 'TYPE NAME';
-        $columns['user_id'] = 'USER NAME';
-        $columns['created_at'] = 'CREATED AT';
+        $columns['type_id'] = 'TYPE NAME'; $columns['user_id'] = 'USER NAME'; $columns['created_at'] = 'CREATED AT';
 
         $data = json_encode(ProjectResource::collection($this->projectRepository->all()));
 
-        return $request->wantsJson() ?
-        $this->sendResponse($data, "", 200) :
-        view('CRUD.index', ['data' => $data, 'columns' => $columns, 'filter_column_names' => $filter_column_names, 'tableName' => $this->tableName]);
+        return view('CRUD.index', ['data' => $data, 'columns' => $columns, 'filterColumnNames' => $filterColumnNames,  'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -51,13 +49,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $columnNames = $this->filteredTableColumnNames(new Project(), ['id', 'created_at', 'updated_at']);
-
-        foreach ($columnNames as $columnName) {
-            $colum_data_types[] = (["name" => $columnName, "type" => Schema::getColumnType($this->tableName, $columnName)]);
-        }
-
-        return view('CRUD.create', ['columns'=>$colum_data_types, 'tableName' => $this->tableName]);
+        $columsWithDataTypes = $this->getColumnType(new Project(), ['id', 'created_at', 'updated_at']);
+        return view('CRUD.create', ['columsWithDataTypes'=>$columsWithDataTypes, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -67,9 +60,7 @@ class ProjectController extends Controller
     {
         $data = $this->projectRepository->create($request->all());
 
-        return $request->wantsJson() ?
-        $this->sendResponse($data, 'تم الاضافة بنجاح.', 201) :
-        redirect()->route($this->tableName.'.index')->with('success', 'تم الاضافة بنجاح');
+        return redirect()->route($this->tableName.'.index')->with('success', 'تم الاضافة بنجاح');
     }
 
     /**
@@ -77,7 +68,8 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        $filterColumnNames = $this->filteredTableColumnNames(new Project(), ['updated_at']);
+        return view('CRUD.show', [$this->modelObjectName => json_decode((new ProjectResource($project))->toJson(), true), 'filterColumnNames' => $filterColumnNames, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -85,12 +77,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $columnNames = $this->filteredTableColumnNames(new Project(), ['id', 'created_at', 'updated_at']);
-
-        foreach ($columnNames as $columnName) {
-            $colum_data_types[] = (["name" => $columnName, "type" => Schema::getColumnType($this->tableName, $columnName)]);
-        }
-        return view('CRUD.edit', ['project' => $project, 'columns'=>$colum_data_types, 'tableName' => $this->tableName]);
+        $columsWithDataTypes = $this->getColumnType(new Project(), ['id', 'created_at', 'updated_at']);
+        return view('CRUD.edit', [$this->modelObjectName => $project, 'columsWithDataTypes'=>$columsWithDataTypes, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -98,11 +86,9 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $data = $this->projectRepository->edit($project->id, $request->all());
+        $this->projectRepository->edit($project->id, $request->all());
 
-        return $request->wantsJson() ?
-        $this->sendResponse($data, "تم التعديل بنجاح", 200) :
-        redirect()->route($this->tableName.'.index')->with('success', 'تم التعديل بنجاح');
+        return redirect()->route($this->tableName.'.index')->with('success', 'تم التعديل بنجاح');
     }
 
     /**
@@ -111,8 +97,6 @@ class ProjectController extends Controller
     public function destroy(Request $request, Project $project)
     {
         $this->projectRepository->delete($project->id);
-        return $request->wantsJson() ?
-        $this->sendResponse("تم الحذف بنجاح", 200) :
-        redirect()->route($this->tableName.'.index')->with('success', 'تم الحذف بنجاح');
+        return redirect()->route($this->tableName.'.index')->with('success', 'تم الحذف بنجاح');
     }
 }

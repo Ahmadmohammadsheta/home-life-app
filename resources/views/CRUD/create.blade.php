@@ -2,10 +2,7 @@
 @section('css')
 @endsection
 @section('title')
-    @php
-    $model = substr($tableName, 0, -1);
-    @endphp
-    <span class="text-muted mt-1 tx-30 mr-2 mb-0">{{ "Create New ".ucfirst($model) }}</span>
+    <span class="text-muted mt-1 tx-30 mr-2 mb-0">{{ "Create New ".ucfirst($modelObjectName) }}</span>
 @stop
 @section('page-header')
 				<!-- breadcrumb -->
@@ -28,16 +25,25 @@
                                     {{ csrf_field() }}
 
                                     <div class="form-group">
-                                        @foreach ($columns as $column)
+                                        @foreach ($columsWithDataTypes as $column)
 
                                         <label style="text-align: center important; display: inline-block" class="text-danger">{{ __(ucfirst($column['name'])) }}</label>
                                         @if ($column['type'] == "bigint")
                                             @if ((Str::contains($column['name'], '_id')))
                                             <select name="{{ $column['name'] }}" class="form-control SlectBox m-2">
                                                 <option class="text-center" value="" selected disabled>{{ __('Choose ').ucfirst(substr($column['name'], 0, -3)) }}</option>
-                                                @foreach (("App\Models\\".ucfirst(substr($column['name'], 0, -3)))::all(); as $value)
-                                                <option value="{{ $value->id }}">{{ $value->name }}</option>
-                                                @endforeach
+                                                @if ($column['name'] == 'parent_id')
+                                                    @foreach (("App\Models\\".ucfirst($modelObjectName))::all() as $value)
+                                                    @php
+                                                        $modelObjectNameValue = $column['name'];
+                                                    @endphp
+                                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                                    @endforeach
+                                                @else
+                                                    @foreach (("App\Models\\".ucfirst(substr($column['name'], 0, -3)))::all(); as $value)
+                                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                                    @endforeach
+                                                @endif
                                             </select>
                                             @endif
                                         @elseif ($column['type'] == "varchar")

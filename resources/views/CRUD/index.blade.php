@@ -1,9 +1,6 @@
 @extends('layouts.master')
 
 @section('title')
-    @php
-    $model = substr($tableName, 0, -1);
-    @endphp
     <span class="text-muted mt-1 tx-30 mr-2 mb-0">{{ "All ".ucfirst($tableName) }}</span>
 @stop
 
@@ -55,16 +52,20 @@
                                         <tbody>
                                             @foreach (json_decode($data) as $item)
                                             <tr>
-                                                @foreach ($filter_column_names as $filter_column_name)
-                                                <td class="border-bottom-0 text-center">{{ $item->$filter_column_name }}</td>
+                                                @foreach ($filterColumnNames as $filterColumnName)
+                                                <td class="border-bottom-0 text-center">{{ $item->$filterColumnName }}</td>
                                                 @endforeach
                                                 <td class="border-bottom-0 text-center">
-                                                    <a class="btn btn-sm btn-info" href="{{ route($tableName.'.edit', [$model => json_encode($item->id)]) }}"><i class="las la-pen"></i></a>
+                                                    <a class="btn btn-sm btn-info" href="{{ route($tableName.'.edit', [$modelObjectName => json_encode($item->id)]) }}"><i class="las la-pen"></i></a>
                                                     <!-- Button trigger modal -->
                                                     <a type="button" class="btn btn-danger btn-sm text-light" data-toggle="modal" data-target="#exampleModal{{$item->id}}"><i
                                                         class="las la-trash"></i></a>
+
+                                                    <a class="btn btn-sm btn-primary" href="{{ route($tableName.'.show', [$modelObjectName => json_encode($item->id)]) }}"><i class="las la-book"></i></a>
                                                 </td>
                                             </tr>
+
+
                                             <!-- Modal -->
                                             <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
@@ -76,12 +77,12 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <h3 class="text-center"> {{ "The $model/ " }}<strong class="text-center text-danger">{{ $item->name }}</strong></h3>
+                                                            <h3 class="text-center"> {{ "The $modelObjectName/ " }}<strong class="text-center text-danger">{{ $item->name }}</strong></h3>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cancel') }}</button>
                                                             <button form="delete{{$item->id}}" class="btn btn-danger">{{ __('Yes') }}</button>
-                                                            <form id="delete{{$item->id}}" action="{{  route($tableName.'.destroy', [$model => $item->id]) }}" method="POST">@csrf @method('DELETE')</form>
+                                                            <form id="delete{{$item->id}}" action="{{  route($tableName.'.destroy', [$modelObjectName => $item->id]) }}" method="POST">@csrf @method('DELETE')</form>
                                                         </div>
                                                     </div>
                                                 </div>
