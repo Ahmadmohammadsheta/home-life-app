@@ -16,15 +16,15 @@ class ProjectController extends Controller
     /**
      * Properties
      */
-    public $ProjectRepository;
+    public $projectRepository;
     public $tableName;
 
 
     /**
      * Repository constructor method
      */
-    public function __construct(ProjectRepositoryInterface $ProjectRepository) {
-        $this->ProjectRepository = $ProjectRepository;
+    public function __construct(ProjectRepositoryInterface $projectRepository) {
+        $this->projectRepository = $projectRepository;
         $this->tableName = $this->modelTableName(new Project());
     }
 
@@ -39,7 +39,7 @@ class ProjectController extends Controller
         $columns['user_id'] = 'USER NAME';
         $columns['created_at'] = 'CREATED AT';
 
-        $data = json_encode(ProjectResource::collection($this->ProjectRepository->all()));
+        $data = json_encode(ProjectResource::collection($this->projectRepository->all()));
 
         return $request->wantsJson() ?
         $this->sendResponse($data, "", 200) :
@@ -65,7 +65,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $this->ProjectRepository->create($request->all());
+        $data = $this->projectRepository->create($request->all());
 
         return $request->wantsJson() ?
         $this->sendResponse($data, 'تم الاضافة بنجاح.', 201) :
@@ -98,7 +98,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $data = $this->ProjectRepository->edit($project->id, $request->all());
+        $data = $this->projectRepository->edit($project->id, $request->all());
 
         return $request->wantsJson() ?
         $this->sendResponse($data, "تم التعديل بنجاح", 200) :
@@ -110,7 +110,7 @@ class ProjectController extends Controller
      */
     public function destroy(Request $request, Project $project)
     {
-        $this->ProjectRepository->delete($project->id);
+        $this->projectRepository->delete($project->id);
         return $request->wantsJson() ?
         $this->sendResponse("تم الحذف بنجاح", 200) :
         redirect()->route($this->tableName.'.index')->with('success', 'تم الحذف بنجاح');
