@@ -53,3 +53,14 @@ Digging Deeper: [
     ]
 ]
 
+DesignPattern: [
+    - Repository & RepositoryInterface
+]
+
+Traits: [
+    - create trait to get table name and column names dynamically and help you to change the returned column names;
+]
+
+Blade: [
+    - create one folder has one (index, create, edit) file to all models data shown dynamically;
+]

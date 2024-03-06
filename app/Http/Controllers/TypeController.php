@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Type;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Http\Traits\GetSqlDataTrait as GetSqlDataTrait;
 use Illuminate\Support\Facades\Schema;
 use App\Repository\TypeRepositoryInterface;
+use App\Http\Traits\GetSqlDataTrait as GetSqlDataTrait;
 
 class TypeController extends Controller
 {
@@ -15,6 +16,7 @@ class TypeController extends Controller
      * Properties
      */
     public $typeRepository;
+    public $tableName;
 
 
     /**
@@ -22,6 +24,7 @@ class TypeController extends Controller
      */
     public function __construct(TypeRepositoryInterface $typeRepository) {
         $this->typeRepository = $typeRepository;
+        $this->tableName = $this->modelTableName(new Type());
     }
 
     /**
@@ -35,7 +38,8 @@ class TypeController extends Controller
 
         $data = $this->typeRepository->all();
         return $request->wantsJson() ?
-        $this->sendResponse($data, "", 200) : view('types.index', ['data' => $data, 'columns' => $columns, 'filter_column_names' => $filter_column_names]);
+        $this->sendResponse($data, "", 200) :
+        view('CRUD.index', ['data' => $data, 'columns' => $columns, 'filter_column_names' => $filter_column_names, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -43,7 +47,12 @@ class TypeController extends Controller
      */
     public function create()
     {
-        return view('types.create');
+        $columnNames = $this->filteredTableColumnNames(new Type(), ['id', 'created_at', 'updated_at']);
+
+        foreach ($columnNames as $columnName) {
+            $colum_data_types[] = (["name" => $columnName, "type" => Schema::getColumnType($this->tableName, $columnName)]);
+        }
+        return view('CRUD.create', ['columns'=>$colum_data_types, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -69,7 +78,12 @@ class TypeController extends Controller
      */
     public function edit(Type $type)
     {
-        //
+        $columnNames = $this->filteredTableColumnNames(new Type(), ['id', 'created_at', 'updated_at']);
+
+        foreach ($columnNames as $columnName) {
+            $colum_data_types[] = (["name" => $columnName, "type" => Schema::getColumnType($this->tableName, $columnName)]);
+        }
+        return view('CRUD.edit', ['type' => $type, 'columns'=>$colum_data_types, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -77,14 +91,21 @@ class TypeController extends Controller
      */
     public function update(Request $request, Type $type)
     {
-        //
+        $data = $this->typeRepository->edit($type->id, $request->all());
+
+        return $request->wantsJson() ?
+        $this->sendResponse($data, "تم التعديل بنجاح", 200) :
+        redirect()->route($this->tableName.'.index')->with('success', 'تم التعديل بنجاح');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Type $type)
+    public function destroy(Request $request, Type $type)
     {
-        //
+        $this->typeRepository->delete($type->id);
+        return $request->wantsJson() ?
+        $this->sendResponse("تم الحذف بنجاح", 200) :
+        redirect()->route($this->tableName.'.index')->with('success', 'تم الحذف بنجاح');
     }
 }
