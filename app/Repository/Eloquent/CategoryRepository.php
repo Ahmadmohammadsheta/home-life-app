@@ -4,6 +4,7 @@ namespace App\Repository\Eloquent;
 
 use App\Models\Category;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use App\Repository\CategoryRepositoryInterface;
 
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
@@ -17,6 +18,18 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
    {
        parent::__construct($model);
    }
+
+   /**
+    * @param array $attributes
+    *
+    * @return Model
+    */
+   public function create(array $attributes): Model
+   {
+       $attributes['image'] = $this->setImage($attributes['image'], 'categories');
+       return $this->model->create($attributes);
+   }
+
 
    /**
     * @param array $attributes
@@ -42,7 +55,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         };
     }
 
-   
+
 
    /**
     * @param array $attributes

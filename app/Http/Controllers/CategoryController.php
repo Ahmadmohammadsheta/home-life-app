@@ -34,8 +34,8 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $filterColumnNames = $this->filteredTableColumnNames(new Category, ['updated_at']);
-        $columns = $this->columnKeysNamesEqualColumnNames(new Category, ['updated_at']);
+        $filterColumnNames = $this->filteredTableColumnNames(new Category, ['image', 'updated_at']);
+        $columns = $this->columnKeysNamesEqualColumnNames(new Category, ['image', 'updated_at']);
         $columns['parent_id'] = 'PARENT NAME'; $columns['type_id'] = 'TYPE NAME'; $columns['created_at'] = 'CREATED AT';
 
         $data = json_encode(CategoryResource::collection($this->categoryRepository->all()));
@@ -57,11 +57,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $this->categoryRepository->create($request->all());
-
-        return $request->wantsJson() ?
-        $this->sendResponse($data, 'تم الاضافة بنجاح.', 201) :
-        redirect()->route($this->tableName.'.index')->with('success', 'تم الاضافة بنجاح');
+        // dd($request->file('image'));
+        $this->categoryRepository->create($request->all());
+        return redirect()->route($this->tableName.'.index')->with('success', 'تم الاضافة بنجاح');
     }
 
     /**

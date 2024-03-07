@@ -40,11 +40,15 @@ packages: [
         - dribbble : not supported;
     ]
 
+    - Intervention Image: [
+        - version 3.4 (the latest) 07-03-2024
+    ]
+
     - 
 ]
 
 Models: [
-    - EmailVerification: User implements MustVerifyEmail
+    - [EmailVerification, resetPassword]: User implements MustVerifyEmail
 ]
 
 Digging Deeper: [
@@ -62,5 +66,5 @@ Traits: [
 ]
 
 Blade: [
-    - create one folder has one (index, create, edit) file to all models data shown dynamically;
+    - create one folder has one (index, create, edit, show, delete) file to all models data shown dynamically;
 ]

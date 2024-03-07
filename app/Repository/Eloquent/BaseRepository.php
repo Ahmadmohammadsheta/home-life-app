@@ -4,10 +4,12 @@ namespace App\Repository\Eloquent;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Traits\ImageProccessingTrait;
 use App\Repository\EloquentRepositoryInterface;
 
 class BaseRepository implements EloquentRepositoryInterface
 {
+    use ImageProccessingTrait;
 
     /**
      * @var Model
@@ -47,7 +49,6 @@ class BaseRepository implements EloquentRepositoryInterface
      */
     public function create(array $attributes): Model
     {
-        // $attributes['created_by'] = auth()->id();
         return $this->model->create($attributes);
     }
 

@@ -42,11 +42,24 @@
                                                 <div class="tab-content">
                                                     <div class="tab-pane active" id="tab4">
                                                         <div class="card">
-                                                            {{-- <div class="card-header">{{ $$modelObjectName->$filterColumnName }}</div> --}}
+                                                            {{-- <div class="card-header">{{ dd($$modelObjectName) }}</div> --}}
                                                             <hr>
                                                             <div class="card-body">
                                                                 @foreach ($filterColumnNames as $filterColumnName)
-                                                                <p>{{ "The $filterColumnName" }} <strong class="text-danger">{{ (json_encode($$modelObjectName[$filterColumnName])) }}</strong></p>
+                                                                @if ($filterColumnName !== "image")
+                                                                <td class="border-bottom-0 text-center"><p>{{ "The $filterColumnName" }} <strong class="text-danger">{{ (json_encode($$modelObjectName[$filterColumnName])) }}</strong></p></td>
+
+                                                                @endif
+                                                                @endforeach
+
+                                                                @foreach ($filterColumnNames as $filterColumnName)
+                                                                @if ($filterColumnName == "image")
+                                                                <div class="border-bottom-0 text-center" style="width: 240px; hieght:180px">
+                                                                    <a href="{{ asset("attachments/categories/".$$modelObjectName[$filterColumnName]) }}" target="_blank">
+                                                                        <img src="{{ (asset("attachments/categories/".$$modelObjectName[$filterColumnName])) }}" alt="My Image">
+                                                                    </a>
+                                                                </div>
+                                                                @endif
                                                                 @endforeach
                                                             </div>
                                                         </div>

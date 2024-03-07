@@ -18,6 +18,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'image' => $this->image == null ? null : $this->image,
             'type_id' => $this->type->name,
             'parent_id' => $this->parent_id == 0 ? "PARTENT" : Category::find($this->parent_id)->name,
             'created_at' => $this->created_at

@@ -21,7 +21,7 @@
                     <div class="col-lg-12 col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route($tableName.'.store') }}" method="post" id="addForm">
+                                <form action="{{ route($tableName.'.store') }}" method="POST" enctype="multipart/form-data">
                                     {{ csrf_field() }}
 
                                     <div class="form-group">
@@ -46,10 +46,16 @@
                                                 @endif
                                             </select>
                                             @endif
-                                        @elseif ($column['type'] == "varchar")
-
-                                            <input type="text" class="form-control m-2 @error($column['name']) is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
+                                        @elseif ($column['type'] == "varchar" && $column['name'] !== "image")
+                                            <input type="text" class="form-control m-2 @error($column['name']) is-invalid @enderror" name="{{ $column['name'] }}" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                        @elseif ($column['name'] == "image")
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label">Default file input example</label>
+                                            <input name="image" class="form-control" type="file" id="formFile">
+                                          </div>
+                                        {{-- <input type="file" name="image" class="dropify" accept=".pdf,.jpg, .png, image/jpeg, image/png"
+                                        data-height="70" /> --}}
+                                            {{-- <input type="file" name="{{ $column['name'] }}" class="form-control m-2"> --}}
                                         @endif
                                         @endforeach
 

@@ -53,7 +53,15 @@
                                             @foreach (json_decode($data) as $item)
                                             <tr>
                                                 @foreach ($filterColumnNames as $filterColumnName)
+                                                @if ($filterColumnName == "image")
+                                                <td class="border-bottom-0 text-center">
+                                                    <a href="{{ asset($item->$filterColumnName) }}" target="_blank">
+                                                        <img src="{{ asset($item->$filterColumnName) }}" alt="My Image">
+                                                    </a>
+                                                </td>
+                                                @else
                                                 <td class="border-bottom-0 text-center">{{ $item->$filterColumnName }}</td>
+                                                @endif
                                                 @endforeach
                                                 <td class="border-bottom-0 text-center">
                                                     <a class="btn btn-sm btn-info" href="{{ route($tableName.'.edit', [$modelObjectName => json_encode($item->id)]) }}"><i class="las la-pen"></i></a>
