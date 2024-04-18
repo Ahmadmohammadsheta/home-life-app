@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Traits;
 
+use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 
 Trait ImageProccessingTrait
 {
@@ -37,6 +38,7 @@ Trait ImageProccessingTrait
      */
     public function imageName($image)
     {
+        // package documentation says
         // create image manager with desired driver
         $manager = new ImageManager(new Driver());
 
@@ -54,37 +56,7 @@ Trait ImageProccessingTrait
     }
 
     /**
-     * AMA-image package version-3 Set single Pdf
-     */
-    public function setfile($file, $path, $width = null, $height = null)
-    {
-        $manager = new ImageManager(new Driver()); // create image manager with desired driver
-        $image = $manager->read($file); // read image from file system
-        $image->scale($width, $height); // resize image
-        $image->place($path); // insert watermark
-        $image->toPng()->save($path); // save modified image in new format
-        // return $image->hashName();
-        // $file->getClientOriginalExtension() == 'pdf' ?:
-        // Image::make($file)->resize($width, $height, function($constraint) {
-        //         $constraint->aspectRatio();
-        //     });
-        // $file->store($this->path . '/' . $path, 'public');
-    }
-
-    /**
-     * AMA.Kssab Set array of pdf files
-     */
-    public function setfiles($files, $path, $column, $width = null, $height = null)
-    {
-        $filesName = [];
-        foreach($files as $file){
-            array_push($filesName, [$column => $this->setPdf($file, $path)]);
-        }
-        return $filesName;
-    }
-
-    /**
-     * AMA-image package version-3
+     * AMA-image package version-3 07-03-2024
      */
     public function setImage($img, $path, $width = null, $height = null)
     {
@@ -154,7 +126,10 @@ Trait ImageProccessingTrait
      */
     public function deleteImage($location, $filename)
     {
-        return Storage::disk('public')->delete($this->path . '/' . $location . '/' . $filename);
+        if (file_exists($this->path . '/' . $location . '/' . $filename)) {
+            return File::delete($this->path . '/' . $location . '/' . $filename);
+            // return Storage::disk('public')->delete($this->path . '/' . $location . '/' . $filename); // if running cmd link::storage
+        }
     }
 
     /**
