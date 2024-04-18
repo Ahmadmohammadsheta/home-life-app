@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('img')->nullable();
             $table->date('age')->nullable();
             $table->string('national_id')->nullable()->unique();
@@ -24,7 +25,6 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->boolean('approved')->default(0);
-            $table->enum('type', [1, 2, 3])->default(1);
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

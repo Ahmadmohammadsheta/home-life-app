@@ -5,19 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Traits\SqlDataRetrievable;
-use Illuminate\Support\Facades\Schema;
 use App\Repository\CategoryRepositoryInterface;
 use App\Http\Resources\Category\CategoryResource;
 
 class CategoryController extends Controller
 {
     use SqlDataRetrievable;
+
     /**
      * Properties
      */
     public $categoryRepository;
     public $tableName;
     public $modelObjectName;
+    public $columnsAsKeys;
+    public $columnsAsValues;
 
 
     /**
@@ -25,22 +27,23 @@ class CategoryController extends Controller
      */
     public function __construct(CategoryRepositoryInterface $categoryRepository) {
         $this->categoryRepository = $categoryRepository;
-        $this->tableName = $this->modelTableName(new Category());
+        $this->tableName = $this->modelTableName(new Category);
         $this->modelObjectName = 'category';
+        $this->columnsAsKeys = $this->columnKeysNamesEqualColumnNames(new Category, ['updated_at']);
+        $this->columnsAsKeys['parent_id'] = 'PARENT NAME'; $this->columnsAsKeys['category_id'] = 'CATEGORY NAME'; $this->columnsAsKeys['type_id'] = 'TYPE NAME'; $this->columnsAsKeys['created_at'] = 'CREATED AT';
+        $this->columnsAsValues = $this->filteredTableColumnNames(new Category, ['updated_at']);
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filterColumnNames = $this->filteredTableColumnNames(new Category, ['image', 'updated_at']);
-        $columns = $this->columnKeysNamesEqualColumnNames(new Category, ['image', 'updated_at']);
-        $columns['parent_id'] = 'PARENT NAME'; $columns['type_id'] = 'TYPE NAME'; $columns['created_at'] = 'CREATED AT';
+        $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at', 'all_parents_ids'], ['parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
 
-        $data = json_encode(CategoryResource::collection($this->categoryRepository->all()));
+        $data = json_encode(CategoryResource::collection($this->categoryRepository->parentCategories()));
 
-        return view('CRUD.index', ['data' => $data,  'columns' => $columns, 'filterColumnNames' => $filterColumnNames, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        return view('CRUD.index', ['data' => $data, 'columns' => $columns]);
     }
 
     /**
@@ -48,8 +51,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $columsWithDataTypes = $this->getColumnType(new Category(), ['id', 'created_at', 'updated_at']);
-        return view('CRUD.create', ['columsWithDataTypes'=>$columsWithDataTypes, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        $columsWithDataTypes = $this->getColumnType(new Category(), ['id', 'created_at', 'updated_at', 'all_parents_ids']);
+        return view('CRUD.create', ['columsWithDataTypes' => $columsWithDataTypes]);
     }
 
     /**
@@ -57,9 +60,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->file('image'));
-        $this->categoryRepository->create($request->all());
-        return redirect()->route($this->tableName.'.index')->with('success', 'تم الاضافة بنجاح');
+        // dd($request->all());
+        $data = $this->categoryRepository->create($request->all());
+        if ($data->parent_id == 0) {
+            return redirect()->route(request()->route()->controller->tableName.'.index')->with('success', 'تم الاضافة بنجاح');
+        }
+        return redirect()->route(request()->route()->controller->tableName.'.show', ['category' => $data->parent_id])->with('success', 'تم الاضافة بنجاح');
     }
 
     /**
@@ -67,8 +73,14 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        $filterColumnNames = $this->filteredTableColumnNames(new Category(), ['updated_at']);
-        return view('CRUD.show', [$this->modelObjectName => json_decode((new CategoryResource($category))->toJson(), true), 'filterColumnNames' => $filterColumnNames, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at'], ['parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+
+        $data = json_encode(CategoryResource::collection($this->categoryRepository->childCategories($category->id)));
+
+        // dd(json_decode($data));
+        return request()->wantsJson() ?
+        response()->json(new CategoryResource($category), 200) :
+        view('CRUD.show', [$this->modelObjectName => json_decode((new CategoryResource($category))->toJson(), true), 'data' => $data], ['columns' => $columns]);
     }
 
     /**
@@ -77,7 +89,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         $columsWithDataTypes = $this->getColumnType(new Category(), ['id', 'created_at', 'updated_at']);
-        return view('CRUD.edit', [$this->modelObjectName => $category, 'columsWithDataTypes'=>$columsWithDataTypes, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        return view('CRUD.edit', [$this->modelObjectName => $category, 'columsWithDataTypes'=>$columsWithDataTypes]);
     }
 
     /**
@@ -89,7 +101,7 @@ class CategoryController extends Controller
 
         return $request->wantsJson() ?
         $this->sendResponse($data, "تم التعديل بنجاح", 200) :
-        redirect()->route($this->tableName.'.index')->with('success', 'تم التعديل بنجاح');
+        redirect()->route(request()->route()->controller->tableName.'.show', [$this->modelObjectName => $data->parent_id])->with('success', 'تم التعديل بنجاح');
     }
 
     /**
@@ -100,6 +112,6 @@ class CategoryController extends Controller
         $this->categoryRepository->delete($category->id);
         return $request->wantsJson() ?
         $this->sendResponse("تم الحذف بنجاح", 200) :
-        redirect()->route($this->tableName.'.index')->with('success', 'تم الحذف بنجاح');
+        redirect()->route(request()->route()->controller->tableName.'.index')->with('success', 'تم الحذف بنجاح');
     }
 }

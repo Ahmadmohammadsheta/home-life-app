@@ -18,6 +18,8 @@ class TypeController extends Controller
     public $typeRepository;
     public $tableName;
     public $modelObjectName;
+    public $columnsAsKeys;
+    public $columnsAsValues;
 
 
     /**
@@ -27,6 +29,9 @@ class TypeController extends Controller
         $this->typeRepository = $typeRepository;
         $this->tableName = $this->modelTableName(new Type());
         $this->modelObjectName = 'type';
+        $this->columnsAsKeys = $this->columnKeysNamesEqualColumnNames(new Type, ['updated_at']);
+        $this->columnsAsKeys['created_at'] = 'CREATED AT';
+        $this->columnsAsValues = $this->filteredTableColumnNames(new Type, ['updated_at']);
     }
 
     /**

@@ -23,7 +23,7 @@ tables
         - id
         - name
         - parent_id
-        - type // not used
+        - type_id // not used
     ]
 
     - positions [

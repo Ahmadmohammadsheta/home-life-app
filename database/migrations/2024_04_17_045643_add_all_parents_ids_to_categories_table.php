@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('main_projects', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->timestamps();
+        Schema::table('categories', function (Blueprint $table) {
+            $table->string('all_parents_ids')->nullable()->after('is_parent');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('main_projects');
+        Schema::table('categories', function (Blueprint $table) {
+            $table->dropColumn('all_parents_ids');
+        });
     }
 };

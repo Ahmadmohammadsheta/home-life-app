@@ -10,7 +10,9 @@ use App\Repository\Eloquent\ProjectRepository;
 use App\Repository\ProjectRepositoryInterface;
 use App\Repository\CategoryRepositoryInterface;
 use App\Repository\Eloquent\CategoryRepository;
+use App\Repository\Eloquent\ThingRepository;
 use App\Repository\EloquentRepositoryInterface;
+use App\Repository\ThingRepositoryInterface;
 
 /**
 * Class RepositoryServiceProvider
@@ -29,6 +31,7 @@ class RepositoryServiceProvider extends ServiceProvider
        $this->app->bind(TypeRepositoryInterface::class, TypeRepository::class);
        $this->app->bind(ProjectRepositoryInterface::class, ProjectRepository::class);
        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+       $this->app->bind(ThingRepositoryInterface::class, ThingRepository::class);
     }
 
     /**

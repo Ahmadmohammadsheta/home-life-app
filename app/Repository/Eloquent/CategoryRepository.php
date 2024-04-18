@@ -3,9 +3,9 @@
 namespace App\Repository\Eloquent;
 
 use App\Models\Category;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use App\Repository\CategoryRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
@@ -14,75 +14,83 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     *
     * @param Category $model
     */
-   public function __construct(Category $model)
-   {
-       parent::__construct($model);
-   }
+    public function __construct(Category $model)
+    {
+        parent::__construct($model);
+    }
+
+    /**
+     * @return Collection
+     * get only the parents categories
+     */
+    public function parentCategories(): Collection
+    {
+        return $this->model->where(['parent_id' => 0])->get();
+    }
+
+    /**
+     * @return Collection
+     * get only the child of shown category
+     */
+    public function childCategories($parent_id): Collection
+    {
+        return $this->model->where(['parent_id' => $parent_id])->get();
+    }
+
+    /**
+     * @param $id
+     * get only the child of shown category
+     */
+    public function parents_ids($id)
+    {
+        $parent = Category::where(['id' => $id])->with('parent')->get();
+
+        return $parent;
+    }
 
    /**
     * @param array $attributes
     *
     * @return Model
     */
-   public function create(array $attributes): Model
-   {
-       $attributes['image'] = $this->setImage($attributes['image'], 'categories');
-       return $this->model->create($attributes);
-   }
+    public function create(array $attributes): Model
+    {
+        !array_key_exists('image', $attributes) ?: $attributes['image'] = $this->setImage($attributes['image'], 'categories');
 
+        $attributes['all_parents_ids'] = implode(',', [$this->find($attributes['id'])->all_parents_ids ?: 1, $this->find($attributes['id'])->id]);
+
+        isset($attributes['is_parent']) ?: $attributes['is_parent'] = 1;
+
+        return $this->model->create($attributes);
+}
 
    /**
-    * @param array $attributes
-    * @return Collection
+    * @param id $attributes
+    * @return Model
     */
-    public function categoriesWhereHasNotParent(array $attributes)
+    public function edit($id, array $attributes)
     {
-        return function($q) use($attributes){
-                !array_key_exists('parent', $attributes) ?: $q
-                ->where('parent_id', '<', '1');
-            };
+        $data = $this->model->findOrFail($id);
+
+        if (array_key_exists('image', $attributes)) {
+            $this->deleteImage('categories', $data['image']); // Working only if file exists
+            $attributes['image'] = $this->setImage($attributes['image'], 'categories');
+        }
+
+        $data->update($attributes);
+        return $data;
     }
 
    /**
-    * @param array $attributes
-    * @return Collection
+    * Delete a model row
     */
-    public function categoriesWhereColumnName(array $attributes)
+    public function delete($id): ?Model
     {
-        return function($q) use($attributes){
-            !array_key_exists('columnName', $attributes) ?: $q
-            ->where([$attributes['columnName'] => $attributes['columnValue']]);
-        };
-    }
+        $data = $this->model->findOrFail($id);
 
+        $this->deleteImage('categories', $data['image']); // Working only if file exists
 
-
-   /**
-    * @param array $attributes
-    * @return Collection
-    */
-    public function categroiesForAllConditions(array $attributes)
-    {
-        return $this->model
-            ->where($this->categoriesWhereHasNotParent($attributes))
-            ->where($this->categoriesWhereColumnName($attributes))
-            ->paginate(array_key_exists('count', $attributes) ? $attributes['count'] : "")
-            ;
-    }
-
-    /**
-     * Get categories of a project.
-     *
-     * @return Collection
-     */
-    public function categoriesOfProject($project_id)
-    {
-        return Category::whereHas('units', function($q) use($project_id) {
-            $q->whereHas('level', function($q) use($project_id) {
-                $q->whereHas('project', function($q) use($project_id) {
-                    $q->where('id', $project_id);
-                });
-            });
-        })->get();
+        $data->delete();
+        return $data;
     }
 }

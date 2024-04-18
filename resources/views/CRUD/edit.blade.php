@@ -1,4 +1,12 @@
 
+@php
+    $tableName = request()->route()->controller->tableName;
+    $modelObjectName = request()->route()->controller->modelObjectName;
+    $id = request()->route("$modelObjectName.id");
+@endphp
+
+
+
 @extends('layouts.master')
 @section('css')
 @endsection
@@ -23,7 +31,7 @@
                     <div class="col-lg-12 col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route($tableName.'.update', [$modelObjectName => $$modelObjectName->id]) }}" method="POST" id="addForm">
+                                <form action="{{ route($tableName.'.update', [$modelObjectName => $id]) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
 
@@ -56,7 +64,7 @@
                                                 @endif
                                             </select>
                                             @endif
-                                        @elseif ($column['type'] == "varchar")
+                                        @elseif ($column['type'] == "varchar" && $column['name'] !== "image")
                                         @php
                                             $modelObjectNameValue = $column['name'];
                                         @endphp
@@ -65,7 +73,11 @@
                                             name="{{ $column['name'] }}"
                                             value="{{ $$modelObjectName->$modelObjectNameValue }}"
                                             required>
-
+                                        @elseif ($column['name'] == "image")
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label">File input</label>
+                                            <input name="image" class="form-control" type="file" id="formFile">
+                                        </div>
                                         @endif
                                         @endforeach
 

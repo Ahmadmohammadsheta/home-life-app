@@ -1,27 +1,19 @@
 <?php
 namespace App\Repository;
+use Illuminate\Support\Collection;
 
-use Illuminate\Database\Eloquent\Model;
-
-interface CategoryRepositoryInterface
-{
+interface CategoryRepositoryInterface {
 
     /**
-     * @param array $attributes
-     * @return Model
-     */
-    public function create(array $attributes): Model;
-
-   /**
-    * @param array $attributes
-    * @return Collection
-    */
-    public function categroiesForAllConditions(array $attributes);
-
-    /**
-     * Get categories of a project.
-     *
      * @return Collection
+     * get only the parents category
      */
-    public function categoriesOfProject($project_id);
+    public function parentCategories(): Collection;
+
+
+    /**
+     * @return Collection
+     * get only the child of shown category
+     */
+    public function childCategories($parent_id): Collection;
 }

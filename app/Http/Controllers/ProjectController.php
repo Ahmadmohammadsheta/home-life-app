@@ -19,6 +19,8 @@ class ProjectController extends Controller
     public $projectRepository;
     public $tableName;
     public $modelObjectName;
+    public $columnsAsKeys;
+    public $columnsAsValues;
 
 
     /**
@@ -28,6 +30,9 @@ class ProjectController extends Controller
         $this->projectRepository = $projectRepository;
         $this->tableName = $this->modelTableName(new Project());
         $this->modelObjectName = 'project';
+        $this->columnsAsKeys = $this->columnKeysNamesEqualColumnNames(new Project, ['updated_at']);
+        $this->columnsAsKeys['user_id'] = 'USER NAME'; $this->columnsAsKeys['type_id'] = 'TYPE NAME'; $this->columnsAsKeys['created_at'] = 'CREATED AT';
+        $this->columnsAsValues = $this->filteredTableColumnNames(new Project, ['updated_at']);
     }
 
     /**

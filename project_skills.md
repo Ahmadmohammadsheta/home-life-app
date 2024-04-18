@@ -27,6 +27,13 @@ RouteServiceProvider : [
     ]
 ]
 
+HelperServiceProvider : [
+    - dynamic get tables from my DB [
+        
+        using Helpers/mysqlTables.php globally available
+    ]
+]
+
 migrations: [
     - adding columns : [
         - after another column // done;
@@ -67,4 +74,7 @@ Traits: [
 
 Blade: [
     - create one folder has one (index, create, edit, show, delete) file to all models data shown dynamically;
+    - @if (Route::currentRouteName() === 'home')
+     @endif
+    - request()->route('category.id')
 ]
