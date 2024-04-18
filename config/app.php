@@ -171,6 +171,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         // AMA-RepositoryServiceProvider::class
         App\Providers\RepositoryServiceProvider::class,
+        
+        App\Providers\HelperServiceProvider::class,
     ])->toArray(),
 
     /*
