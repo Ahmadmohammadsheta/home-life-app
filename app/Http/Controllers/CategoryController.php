@@ -111,7 +111,7 @@ class CategoryController extends Controller
 
         return $request->wantsJson() ?
         $this->sendResponse($data, "تم التعديل بنجاح", 200) :
-        redirect()->route(request()->route()->controller->tableName.'.show', [$this->modelObjectName => $data->parent_id])->with('success', 'تم التعديل بنجاح');
+        redirect()->route(request()->route()->controller->tableName.'.show', [$this->modelObjectName => $data->parent_id ?: $data->id])->with('success', 'تم التعديل بنجاح');
     }
 
     /**
