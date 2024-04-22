@@ -6,22 +6,30 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'image', 'parent_id', 'type_id', 'is_parent', 'all_parents_ids'];
 
+    protected $parentsIds;
 
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
-    public function children()
+    public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', 0);
+    }
+
+    public function things(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', 1);
     }
 
     /**
@@ -31,53 +39,6 @@ class Category extends Model
     {
         return $this->belongsTo(Type::class);
     }
-
-    /**
-     * The attributes that make product relationship
-     */
-    public function things()
-    {
-        return $this->hasMany(Thing::class);
-    }
-
-
-    /**
-    * Get Type Name Attribute.
-    *
-    * @return Attribute
-    */
-    // protected function typeId(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn ($value) => Type::find($value)->name,
-    //     );
-    // }
-
-    public function allParents()
-    {
-        $all_parents_ids = (explode(',', Category::find($this->id)->all_parents_ids));
-        $parents = [];
-        if (!is_null($all_parents_ids)) {
-            foreach ($all_parents_ids as $singleId) {
-                $category = Category::find($singleId);
-                $parents[] = $category->name;
-                // array_push($parents, $category->name);
-            }
-        }
-        return $parents;
-    }
-
-    /**
-    * Get User Attribute.
-    *
-    * @return Attribute
-    */
-    // protected function userId(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn ($value) => User::find($value)->name,
-    //     );
-    // }
 
     /**
     * Created by Attribute.

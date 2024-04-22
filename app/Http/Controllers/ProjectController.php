@@ -19,8 +19,6 @@ class ProjectController extends Controller
     public $projectRepository;
     public $tableName;
     public $modelObjectName;
-    public $columnsAsKeys;
-    public $columnsAsValues;
 
 
     /**
@@ -30,9 +28,6 @@ class ProjectController extends Controller
         $this->projectRepository = $projectRepository;
         $this->tableName = $this->modelTableName(new Project());
         $this->modelObjectName = 'project';
-        $this->columnsAsKeys = $this->columnKeysNamesEqualColumnNames(new Project, ['updated_at']);
-        $this->columnsAsKeys['user_id'] = 'USER NAME'; $this->columnsAsKeys['type_id'] = 'TYPE NAME'; $this->columnsAsKeys['created_at'] = 'CREATED AT';
-        $this->columnsAsValues = $this->filteredTableColumnNames(new Project, ['updated_at']);
     }
 
     /**
@@ -40,13 +35,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $filterColumnNames = $this->filteredTableColumnNames(new Project, ['updated_at']);
-        $columns = $this->columnKeysNamesEqualColumnNames(new Project, ['updated_at']);
-        $columns['type_id'] = 'TYPE NAME'; $columns['user_id'] = 'USER NAME'; $columns['created_at'] = 'CREATED AT';
+        $columns = $this->columnsAsKeysAndValues(new Project(), ['updated_at'], ['user_id' => 'USER NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
 
-        $data = json_encode(ProjectResource::collection($this->projectRepository->all()));
+        $data = ProjectResource::collection($this->projectRepository->all());
 
-        return view('CRUD.index', ['data' => $data, 'columns' => $columns, 'filterColumnNames' => $filterColumnNames,  'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        return view('CRUD.index', ['data' => $data, 'columns' => $columns]);
     }
 
     /**
@@ -73,8 +66,8 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $filterColumnNames = $this->filteredTableColumnNames(new Project(), ['updated_at']);
-        return view('CRUD.show', [$this->modelObjectName => json_decode((new ProjectResource($project))->toJson(), true), 'filterColumnNames' => $filterColumnNames, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        $columns = $this->columnsAsKeysAndValues(new Project(), ['updated_at'], ['user_id' => 'USER NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+        return view('CRUD.show', [$this->modelObjectName => new ProjectResource($project), 'columns' => $columns]);
     }
 
     /**

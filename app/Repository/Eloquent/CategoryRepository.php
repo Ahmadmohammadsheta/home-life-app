@@ -32,9 +32,50 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
      * @return Collection
      * get only the child of shown category
      */
-    public function childCategories($parent_id): Collection
+    public function childCategories($parentId): Collection
     {
-        return $this->model->where(['parent_id' => $parent_id])->get();
+        return $this->model
+            ->where(['parent_id' => $parentId])
+            ->with(['parent', 'children'])
+            ->get();
+    }
+
+    public function getAllChildren($parentId): array
+    {
+        $currentId = $parentId;
+
+        $children = [];
+        $currentChildren = $this->model->where('parent_id', $currentId)->get();
+
+        foreach ($currentChildren as $child) {
+            if ($child->is_parent === 0) {
+                $children[] = $child;
+                $children = array_merge($children, $this->getAllChildren($child->id));
+            }
+        }
+
+        return $children;
+    }
+
+    /**
+     * @return array
+     * get only the final Category of shown category
+     */
+    public function finalCategory($parentId): array
+    {
+        $all = $this->model
+            ->where('is_parent', 1)
+            ->get();
+
+        foreach ($all as $single) {
+            $all_parents_ids = explode(',', $single->all_parents_ids);
+            if (in_array($parentId, $all_parents_ids)) {
+                $finalCategory[] = $single;
+            } else {
+                $finalCategory = [];
+            }
+        }
+        return $finalCategory;
     }
 
     /**

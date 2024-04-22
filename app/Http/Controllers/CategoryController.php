@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\SqlDataRetrievable;
 use App\Repository\CategoryRepositoryInterface;
 use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Category\NonParentResource;
 
 class CategoryController extends Controller
 {
@@ -41,9 +42,9 @@ class CategoryController extends Controller
     {
         $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at', 'all_parents_ids'], ['parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
 
-        $data = json_encode(CategoryResource::collection($this->categoryRepository->parentCategories()));
+        $data = CategoryResource::collection($this->categoryRepository->parentCategories());
 
-        return view('CRUD.index', ['data' => $data, 'columns' => $columns]);
+        return view('CRUD.index', ['data' => $data], ['columns' => $columns]);
     }
 
     /**
@@ -62,6 +63,7 @@ class CategoryController extends Controller
     {
         // dd($request->all());
         $data = $this->categoryRepository->create($request->all());
+
         if ($data->parent_id == 0) {
             return redirect()->route(request()->route()->controller->tableName.'.index')->with('success', 'تم الاضافة بنجاح');
         }
@@ -73,14 +75,22 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at'], ['parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+        $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at'], ['all_parents_ids' => 'PARENTS', 'parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
 
-        $data = json_encode(CategoryResource::collection($this->categoryRepository->childCategories($category->id)));
+        $finalCategoryData = $this->categoryRepository->finalCategory($category->id);
 
-        // dd(json_decode($data));
+        $data = $this->categoryRepository->getAllChildren($category->id);
+
+        $return = [$this->modelObjectName => (new CategoryResource($category)),
+            'data' => CategoryResource::collection($data),
+            'finalCategoryData' => NonParentResource::collection($finalCategoryData),
+            'thisFinalCategoryData' => NonParentResource::collection($category->things),
+            'childrenData' => CategoryResource::collection($category->children)
+        ];
+
         return request()->wantsJson() ?
-        response()->json(new CategoryResource($category), 200) :
-        view('CRUD.show', [$this->modelObjectName => json_decode((new CategoryResource($category))->toJson(), true), 'data' => $data], ['columns' => $columns]);
+        response()->json($return, 200) :
+        view('CRUD.show', $return, ['columns' => $columns]);
     }
 
     /**

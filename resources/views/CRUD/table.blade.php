@@ -45,7 +45,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (json_decode($data) as $item)
+                                            @foreach ($data as $item)
                                             <tr>
                                                 @foreach ($columnsAsValues as $columnsAsValue)
 

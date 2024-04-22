@@ -18,8 +18,6 @@ class TypeController extends Controller
     public $typeRepository;
     public $tableName;
     public $modelObjectName;
-    public $columnsAsKeys;
-    public $columnsAsValues;
 
 
     /**
@@ -29,9 +27,6 @@ class TypeController extends Controller
         $this->typeRepository = $typeRepository;
         $this->tableName = $this->modelTableName(new Type());
         $this->modelObjectName = 'type';
-        $this->columnsAsKeys = $this->columnKeysNamesEqualColumnNames(new Type, ['updated_at']);
-        $this->columnsAsKeys['created_at'] = 'CREATED AT';
-        $this->columnsAsValues = $this->filteredTableColumnNames(new Type, ['updated_at']);
     }
 
     /**
@@ -39,12 +34,11 @@ class TypeController extends Controller
      */
     public function index()
     {
-        $filterColumnNames = $this->filteredTableColumnNames(new Type, ['updated_at']);
-        $columns = $this->columnKeysNamesEqualColumnNames(new Type, ['updated_at']);
-        $columns['created_at'] = 'CREATED AT';
+        $columns = $this->columnsAsKeysAndValues(new Type(), ['updated_at'], ['craeted_at' => 'CRAETED At']);
 
         $data = $this->typeRepository->all();
-        return view('CRUD.index', ['data' => $data, 'columns' => $columns, 'filterColumnNames' => $filterColumnNames, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+
+        return view('CRUD.index', ['data' => $data, 'columns' => $columns]);
     }
 
     /**
@@ -70,8 +64,8 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        $filterColumnNames = $this->filteredTableColumnNames(new Type, ['updated_at']);
-        return view('CRUD.show', [$this->modelObjectName => $type, 'filterColumnNames' => $filterColumnNames, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        $columns = $this->columnsAsKeysAndValues(new Type(), ['updated_at'], ['user_id' => 'USER NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+        return view('CRUD.show', [$this->modelObjectName => $type, 'columns' => $columns]);
     }
 
     /**

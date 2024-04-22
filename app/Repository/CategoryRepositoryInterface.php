@@ -1,6 +1,7 @@
 <?php
 namespace App\Repository;
 use Illuminate\Support\Collection;
+use App\Models\Category;
 
 interface CategoryRepositoryInterface {
 
@@ -15,5 +16,12 @@ interface CategoryRepositoryInterface {
      * @return Collection
      * get only the child of shown category
      */
-    public function childCategories($parent_id): Collection;
+    public function childCategories($parentId): Collection;
+
+    /**
+     * @return array
+     * get only the child of shown category
+     */
+    public function getAllChildren($parentId): array;
+
 }

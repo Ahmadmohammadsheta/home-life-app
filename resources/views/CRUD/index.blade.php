@@ -28,7 +28,7 @@
 
 @section('content')
 				<!-- row -->
-                @include('CRUD.table')
+                @if (View::exists("CRUD.$tableName.index")) @include("CRUD.$tableName.index") @else @include('CRUD.table') @endif
 				<!-- row closed -->
 @endsection
 @section('js')
