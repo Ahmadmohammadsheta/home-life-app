@@ -13,7 +13,10 @@ routes: [
     - controller
     - middleware
     - resource
-],
+],[
+    - Route::currentRouteName()
+    - request()->route()->
+]
 
 RouteServiceProvider : [
     - dynamic controller namespace [
@@ -77,4 +80,6 @@ Blade: [
     - @if (Route::currentRouteName() === 'home')
      @endif
     - request()->route('category.id')
+    - @if (\View::exists("CRUD.$tableName.index")) @include("CRUD.$tableName.index") @endif
+    - includeif()
 ]
