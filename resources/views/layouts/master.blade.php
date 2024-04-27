@@ -45,6 +45,8 @@
             </div>
             <!-- my main closed -->
         </div>
+
+        
         @include('layouts.footer-scripts')
 	</body>
 </html>

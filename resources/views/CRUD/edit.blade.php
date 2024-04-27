@@ -82,7 +82,7 @@
                                             <div class="form-check">
                                                 <label style="text-align: center important;">{{ __('TRUE') }}</label>
 
-                                                <input class="form-check-input text-center mr-2" name="{{ $column['name'] }}"  type="checkbox" value="{{ 0 }}" id="flexCheckChecked" {{ $$modelObjectName->$modelObjectNameValue == true ?: 'checked' }}>
+                                                <input class="form-check-input text-center mr-2" name="{{ $column['name'] }}"  type="checkbox" value="{{ 1 }}" id="flexCheckChecked" {{ $$modelObjectName->$modelObjectNameValue == false ?: 'checked' }}>
                                             </div>
                                         </div>
                                         @endif

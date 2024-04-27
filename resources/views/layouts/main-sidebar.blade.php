@@ -50,5 +50,21 @@
     </li>
 </ul>
 <div class="sidebar-footer">
-    <a href="" class="sidebar-link"><i class="lni lni-exit"></i><span>Logout</span></a>
+    <a href="" class="sidebar-link">          <!-- Settings Dropdown -->
+    <div class="sm:flex sm:items-center sm:ms-6">
+        <!-- Authentication -->
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+
+            <x-dropdown-link :href="route('logout')"
+                    onclick="event.preventDefault();
+                                this.closest('form').submit();">
+                        <a href="" class="sidebar-link text-primary">
+                            <i class="lni lni-exit"></i>
+                            <span>{{ __('Log Out') }}</span>
+                        </a>
+            </x-dropdown-link>
+        </form>
+    </div>
+</a>
 </div>

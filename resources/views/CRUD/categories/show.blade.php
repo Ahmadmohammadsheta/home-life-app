@@ -1,46 +1,52 @@
-@section('#tab5')
-<li><a href="#tab5" class="nav-link" data-toggle="tab">{{ __('This Children') }}</a></li>
+@section('#tab1')
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-1-tab" data-bs-toggle="pill" data-bs-target="#pills-1" type="button" role="tab" aria-controls="pills-1" aria-selected="false">{{ __('This Children') }}</button>
+</li>
 @endsection
 
-@section('#tab6')
-<li><a href="#tab6" class="nav-link" data-toggle="tab">{{ __('All Children') }}</a></li>
+@section('#tab2')
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-2-tab" data-bs-toggle="pill" data-bs-target="#pills-2" type="button" role="tab" aria-controls="pills-2" aria-selected="false">{{ __('All Children') }}</button>
+</li>
 @endsection
 
-@section('#tab7')
-<li><a href="#tab7" class="nav-link" data-toggle="tab">{{ __('This Things') }}</a></li>
+@section('#tab3')
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-3-tab" data-bs-toggle="pill" data-bs-target="#pills-3" type="button" role="tab" aria-controls="pills-3" aria-selected="false" >{{ __('This Things') }}</button>
+</li>
 @endsection
 
-@section('#tab8')
-<li><a href="#tab8" class="nav-link" data-toggle="tab">{{ __('All Things') }}</a></li>
+@section('#tab4')
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-4-tab" data-bs-toggle="pill" data-bs-target="#pills-4" type="button" role="tab" aria-controls="pills-4" aria-selected="false">{{ __('All Things') }}</button>
+</li>
 @endsection
 
 
 
 
 
-@section('tab5')
-<div class="table-responsive mt-15">
-
-    <div class="card card-statistics">
-        @includeIf("CRUD.$tableName.children_from_relation")
-    </div>
+@section('tab1')
+<div class="tab-pane fade" id="pills-1" role="tabpanel" aria-labelledby="pills-1-tab" tabindex="0">
+    @includeIf("CRUD.$tableName.children_from_relation")
 </div>
 @endsection
 
-@section('tab6')
-<div class="card card-statistics">
+@section('tab2')
+<div class="tab-pane fade" id="pills-2" role="tabpanel" aria-labelledby="pills-2-tab" tabindex="0">
     @includeIf("CRUD.$tableName.index")
 </div>
 @endsection
 
-@section('tab7')
-<div class="card card-statistics">
+@section('tab3')
+<div class="tab-pane fade" id="pills-3" role="tabpanel" aria-labelledby="pills-3-tab" tabindex="0">
     @includeIf("CRUD.$tableName.this_non_parent")
 </div>
 @endsection
 
-@section('tab8')
-<div class="card card-statistics">
+@section('tab4')
+<div class="tab-pane fade" id="pills-4" role="tabpanel" aria-labelledby="pills-4-tab" tabindex="0">
     @includeIf("CRUD.$tableName.non_parent")
 </div>
 @endsection
+

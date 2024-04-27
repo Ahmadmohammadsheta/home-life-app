@@ -10,9 +10,14 @@
 </form>
 <div class="navbar-collapse collapse">
     <ul class="navbar-nav ms-auto">
+        <div class="sm:flex sm:items-center sm:ms-6">
+            <x-dropdown-link :href="route('profile.edit')">
+                <span class="text-warning">{{ Auth::user()->name }}</span>
+            </x-dropdown-link>
+        </div>
         <li class="nav-item dropdown">
             <a href="" class="van-icon pe-md-0" data-bs-toggle="dropdown">
-                <img src="{{ asset("assets/api.jpeg") }}" alt="" class="avatar img-fluid">
+                <img src="{{ asset("assets/img/api.jpeg") }}" alt="" class="avatar img-fluid">
             </a>
             <div class="dropdown-menu dropdown-menu-end rounded">
                 <a href="" class="dropdown-item">
@@ -24,10 +29,22 @@
                     <span>Setting</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="" class="dropdown-item">
-                    <i class="lni lni-question-circle"></i>
-                    <span>Logout</span>
-                </a>
+                 <!-- Settings Dropdown -->
+                <div class="sm:flex sm:items-center sm:ms-6">
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <x-dropdown-link :href="route('logout')"
+                                onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                        <a href="" class="dropdown-item text-primary">
+                            <i class="lni lni-exit"></i>
+                            <span>{{ __('Log Out') }}</span>
+                        </a>
+                        </x-dropdown-link>
+                    </form>
+                </div>
             </div>
         </li>
     </ul>
