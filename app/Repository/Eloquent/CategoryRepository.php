@@ -53,7 +53,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         $currentChildren = $this->model->where('parent_id', $currentId)->get();
 
         foreach ($currentChildren as $child) {
-            if ($child->is_parent === true) {
+            if ($child->is_parent == true) {
                 $children[] = $child;
                 $children = array_merge($children, $this->getAllChildren($child->id));
             }
@@ -119,16 +119,16 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         $all = $this->model
             ->where('is_parent', false)
             ->get();
-
+            
+        $finalCategories = [];
         foreach ($all as $single) {
             $all_parents_ids = explode(',', $single->all_parents_ids);
             if (in_array($parentId, $all_parents_ids)) {
-                $finalCategory[] = $single;
-            } else {
-                $finalCategory = [];
+                array_push($finalCategories, $single);
+                // $finalCategories[] = $single;
             }
         }
-        return $finalCategory;
+        return $finalCategories;
     }
 
     /**
@@ -175,7 +175,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
             $attributes['all_parents_ids'] = implode(',', [$this->find($attributes['parent_id'])->all_parents_ids, $this->find($attributes['parent_id'])->id]);
         }
 
-        isset($attributes['is_parent']) ?: $attributes['is_parent'] = false;
+        isset($attributes['is_parent']) ? $attributes['is_parent'] = true : $attributes['is_parent'] = false;
 
         $data->update($attributes);
 
