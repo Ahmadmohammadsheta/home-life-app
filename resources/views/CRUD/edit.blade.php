@@ -38,25 +38,25 @@
                                     <div class="form-group">
                                         @foreach ($columsWithDataTypes as $column)
 
+                                        @php
+                                            $modelObjectNameValue = $column['name'];
+                                        @endphp
+
                                         <label style="text-align: center important; display: inline-block" class="text-danger">{{ __(ucfirst($column['name'])) }}</label>
                                         @if ($column['type'] == "bigint")
                                             @if ((Str::contains($column['name'], '_id')))
                                             <select name="{{ $column['name'] }}" class="form-control SlectBox m-2">
                                                 <option class="text-center" value="" selected disabled>{{ __('Choose ').ucfirst(substr($column['name'], 0, -3)) }}</option>
                                                 @if ($column['name'] == 'parent_id')
-                                                    @foreach (("App\Models\\".ucfirst($modelObjectName))::all() as $value)
-                                                    @php
-                                                        $modelObjectNameValue = $column['name'];
-                                                    @endphp
+                                                    @foreach (("App\Models\\".ucfirst($modelObjectName))::where('id', '!=', $id)->get() as $value)
+
                                                     <option value="{{ $value->id }}"
                                                         {{ $value->id != $$modelObjectName->$modelObjectNameValue ?: 'selected' }}
                                                         >{{ $value->name }}</option>
                                                     @endforeach
                                                 @else
                                                     @foreach (("App\Models\\".ucfirst(substr($column['name'], 0, -3)))::all() as $value)
-                                                    @php
-                                                        $modelObjectNameValue = $column['name'];
-                                                    @endphp
+
                                                     <option value="{{ $value->id }}"
                                                         {{ $value->id != $$modelObjectName->$modelObjectNameValue ?: 'selected' }}
                                                         >{{ $value->name }}</option>
@@ -65,9 +65,7 @@
                                             </select>
                                             @endif
                                         @elseif ($column['type'] == "varchar" && $column['name'] !== "image")
-                                        @php
-                                            $modelObjectNameValue = $column['name'];
-                                        @endphp
+
                                             <input type="text"
                                             class="form-control m-2 @error($column['name']) is-invalid @enderror"
                                             name="{{ $column['name'] }}"
@@ -77,6 +75,15 @@
                                         <div class="mb-3">
                                             <label for="formFile" class="form-label">File input</label>
                                             <input name="image" class="form-control" type="file" id="formFile">
+                                        </div>
+                                        @elseIf ($column['name'] == "is_parent")
+
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <label style="text-align: center important;">{{ __('TRUE') }}</label>
+
+                                                <input class="form-check-input text-center mr-2" name="{{ $column['name'] }}"  type="checkbox" value="{{ 0 }}" id="flexCheckChecked" {{ $$modelObjectName->$modelObjectNameValue == true ?: 'checked' }}>
+                                            </div>
                                         </div>
                                         @endif
                                         @endforeach

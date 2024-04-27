@@ -3,5 +3,5 @@
     @php($data = $finalCategoryData)
 
     @include('CRUD.table')
-    
+
 @endif

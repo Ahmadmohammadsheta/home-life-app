@@ -4,7 +4,7 @@
     $modelObjectName = request()->route()->controller->modelObjectName;
     $id = request()->get('id');
 @endphp
-
+{{-- {{ dd($columsWithDataTypes) }} --}}
 
 
 @extends('layouts.master')
@@ -45,8 +45,7 @@
                                             <select name="{{ $column['name'] }}" class="form-control SlectBox m-2">
                                                 <option class="text-center" value="" selected disabled>{{ __('Choose ').ucfirst(substr($column['name'], 0, -3)) }}</option>
                                                 @if ($column['name'] == 'parent_id')
-                                                    @foreach (("App\Models\\".ucfirst($modelObjectName))::all() as $value)
-
+                                                    @foreach (("\App\Models\\".ucfirst($modelObjectName))::all() as $value)
                                                     <option value="{{ $value->id }}">{{ $value->name }}</option>
                                                     @endforeach
                                                 @else
@@ -63,12 +62,12 @@
                                                 <label for="formFile" class="form-label">File input</label>
                                                 <input name="image" class="form-control" type="file" id="formFile">
                                             </div>
-                                        @elseif ($column['type'] == "tinyint")
+                                        @elseif ($column['name'] == "is_parent")
                                         <div class="mb-3">
                                             <div class="form-check">
                                                 <label style="text-align: center important;">{{ __('TRUE') }}</label>
 
-                                                <input class="form-check-input text-center mr-2" name="{{ $column['name'] }}"  type="checkbox" value="{{ 0 }}" id="flexCheckChecked" checked>
+                                                <input class="form-check-input text-center mr-2" name="{{ $column['name'] }}"  type="checkbox" value="{{ 1 }}" id="flexCheckChecked" checked>
                                             </div>
                                         </div>
                                         @endif
@@ -107,15 +106,16 @@
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
+                        console.log(data.category);
                         $('select[name="parent_id"]').empty();
 
                         $('select[name="parent_id"]').append('<option value="' +
-                        data.id + '">' + data.name + '</option>');
+                        data.category.id + '">' + data.category.name + '</option>');
 
                         $('select[name="type_id"]').empty();
 
                         $('select[name="type_id"]').append('<option value="' +
-                        data.type.id + '">' + data.type.name + '</option>');
+                        data.category.type.id + '">' + data.category.type.name + '</option>');
                     },
                 });
 

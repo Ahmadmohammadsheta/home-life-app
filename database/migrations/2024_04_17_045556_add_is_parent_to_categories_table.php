@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->boolean('is_parent')->after('parent_id')->default('0');
+            $table->boolean('is_parent')->after('parent_id')->default(true);
         });
     }
 

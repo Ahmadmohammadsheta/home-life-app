@@ -19,8 +19,6 @@ class CategoryController extends Controller
     public $categoryRepository;
     public $tableName;
     public $modelObjectName;
-    public $columnsAsKeys;
-    public $columnsAsValues;
 
 
     /**
@@ -30,9 +28,6 @@ class CategoryController extends Controller
         $this->categoryRepository = $categoryRepository;
         $this->tableName = $this->modelTableName(new Category);
         $this->modelObjectName = 'category';
-        $this->columnsAsKeys = $this->columnKeysNamesEqualColumnNames(new Category, ['updated_at']);
-        $this->columnsAsKeys['parent_id'] = 'PARENT NAME'; $this->columnsAsKeys['category_id'] = 'CATEGORY NAME'; $this->columnsAsKeys['type_id'] = 'TYPE NAME'; $this->columnsAsKeys['created_at'] = 'CREATED AT';
-        $this->columnsAsValues = $this->filteredTableColumnNames(new Category, ['updated_at']);
     }
 
     /**
@@ -81,7 +76,7 @@ class CategoryController extends Controller
 
         $data = $this->categoryRepository->getAllChildren($category->id);
 
-        $return = [$this->modelObjectName => (new CategoryResource($category)),
+        $return = [$this->modelObjectName => new CategoryResource($category),
             'data' => CategoryResource::collection($data),
             'finalCategoryData' => NonParentResource::collection($finalCategoryData),
             'thisFinalCategoryData' => NonParentResource::collection($category->things),
@@ -98,7 +93,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        $columsWithDataTypes = $this->getColumnType(new Category(), ['id', 'created_at', 'updated_at']);
+        $columsWithDataTypes = $this->getColumnType(new Category(), ['id', 'created_at', 'updated_at', 'all_parents_ids']);
+
         return view('CRUD.edit', [$this->modelObjectName => $category, 'columsWithDataTypes'=>$columsWithDataTypes]);
     }
 

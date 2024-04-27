@@ -82,4 +82,5 @@ Blade: [
     - request()->route('category.id')
     - @if (\View::exists("CRUD.$tableName.index")) @include("CRUD.$tableName.index") @endif
     - includeif()
+    - Str::contains($column['name'], '_id')
 ]

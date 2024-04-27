@@ -24,12 +24,12 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', 0);
+        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', true);
     }
 
     public function things(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', 1);
+        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', false);
     }
 
     /**
