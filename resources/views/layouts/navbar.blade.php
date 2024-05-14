@@ -17,7 +17,7 @@
         </div>
         <li class="nav-item dropdown">
             <a href="" class="van-icon pe-md-0" data-bs-toggle="dropdown">
-                <img src="{{ asset("assets/img/api.jpeg") }}" alt="" class="avatar img-fluid">
+                <img src="{{ asset("assets/icons/user.svg") }}" alt="" class="avatar img-fluid">
             </a>
             <div class="dropdown-menu dropdown-menu-end rounded">
                 <a href="" class="dropdown-item">

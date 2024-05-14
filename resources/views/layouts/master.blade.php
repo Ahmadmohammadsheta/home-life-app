@@ -34,6 +34,11 @@
                         </div>
                         <!-- breadcrumb -->
                         <div class="mb-3">
+                            <div class="mb3">
+                                @if (session()->has('session'))
+                                <div class="alert alert-{{ session('session') }} text-center text-bold" style="font-weight: bolder; font-size:xx-large">{{ session('message') }}</div>
+                                @endif
+                            </div>
                             @yield('content')
                         </div>
                     </div>
@@ -46,7 +51,7 @@
             <!-- my main closed -->
         </div>
 
-        
+
         @include('layouts.footer-scripts')
 	</body>
 </html>

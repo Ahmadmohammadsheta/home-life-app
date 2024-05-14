@@ -4,6 +4,6 @@
 
     @php($data = $childrenData)
 
-    @include('CRUD.table')
+    @include('crud._table')
 @endif
 

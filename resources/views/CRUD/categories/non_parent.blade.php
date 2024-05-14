@@ -1,7 +1,7 @@
 @if (Route::currentRouteName() === "categories.show")
 
-    @php($data = $finalCategoryData)
+    @php($data = $allRelatedThings)
 
-    @include('CRUD.table')
+    @include('crud._table')
 
 @endif
