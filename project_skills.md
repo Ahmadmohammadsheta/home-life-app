@@ -41,6 +41,9 @@ migrations: [
     - adding columns : [
         - after another column // done;
         - before // not working
+        - $table->foreignId('parent_id_id'->constrained('categories', 'id');
+        - $table->foreignId('parent_id')->nullable(must be before any another modifier)->constrained('categories', 'id')
+             ->nullOnDelet(or)->cascadeOnDelete(or)->restrictOnDelete();
     ]
 ]
 
@@ -80,7 +83,10 @@ Blade: [
     - @if (Route::currentRouteName() === 'home')
      @endif
     - request()->route('category.id')
-    - @if (\View::exists("CRUD.$tableName.index")) @include("CRUD.$tableName.index") @endif
+    - @if (\View::exists("crud.$tableName.index")) @include("crud.$tableName.index") @endif
     - includeif()
     - Str::contains($column['name'], '_id')
+    - @includeIf("crud.$tableName.show", ['page' => 'name'])
+    - @yeild("name", ['page' => 'name'])
+    - @section('page-header', {{ __(ucfirst($tableName)) }})
 ]
