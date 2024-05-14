@@ -7,14 +7,10 @@
 
 @extends('layouts.master')
 
-@section('title')
-{{ "/ All ".ucfirst($tableName) }}
-@endsection
+@section('title', "/ All ".ucfirst($tableName))
 
 @section('css')
 @endsection
-
-@section('page-header', ucfirst($tableName))
 
 @section('content')
     <!-- row -->

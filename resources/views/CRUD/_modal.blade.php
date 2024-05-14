@@ -20,6 +20,9 @@
 </div>
 
 
+{{-- <a type="button" class="btn btn-danger btn-sm text-light" data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}"><i
+    class="lni lni-trash-can"></i></a> --}}
+
 {{--
 <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

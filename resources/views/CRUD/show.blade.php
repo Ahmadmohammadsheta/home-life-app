@@ -13,15 +13,9 @@
 
 @includeIf("crud.$tableName.show", ['page' => 'name'])
 
-@section('title')
-{{ "/Show ".ucfirst($modelObjectName) }}
-@endsection
+@section('title', "/Show ".ucfirst($modelObjectName))
 
 @section('css')
-@endsection
-
-@section('page-header')
-{{ __(ucfirst($tableName)) }}
 @endsection
 
 @section('content')
@@ -57,7 +51,6 @@
                                         @endif
 
                                         @if ($columnsAsValue == "parent_id")
-                                        {{-- <a href="{{ route($tableName.'.show', [$modelObjectName => json_encode($$modelObjectName['category_id'])]) }}"> --}}
                                         <a href="{{ url($tableName."/".$$modelObjectName['parent_id']) }}">
                                             <div class="mb-0">
                                                 <span class="badge text-success me-2">{{ "The $columnsAsValue" }}</span>

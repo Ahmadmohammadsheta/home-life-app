@@ -27,3 +27,7 @@
     @endif
 
 @endforeach
+
+<div class="d-flex justify-content-center">
+    <button type="submit" class="btn btn-success d-block w-100">{{ $action }}</button>
+</div>
