@@ -37,7 +37,7 @@ class ThingController extends Controller
         $columns = $this->columnsAsKeysAndValues(new Thing, ['updated_at'], ['member_id' => 'Member NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
         $data = json_encode(ThingResource::collection($this->thingRepository->all()));
 
-        return view('CRUD.index', ['data' => $data], ['columns' => $columns]);
+        return view('crud.index', ['data' => $data], ['columns' => $columns]);
     }
 
     /**
@@ -46,7 +46,7 @@ class ThingController extends Controller
     public function create()
     {
         $columsWithDataTypes = $this->getColumnType(new Thing(), ['id', 'created_at', 'updated_at']);
-        return view('CRUD.create', ['columsWithDataTypes'=>$columsWithDataTypes, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
+        return view('crud.create', ['columsWithDataTypes'=>$columsWithDataTypes, 'modelObjectName' => $this->modelObjectName, 'tableName' => $this->tableName]);
     }
 
     /**
@@ -65,7 +65,7 @@ class ThingController extends Controller
     public function show(Thing $thing)
     {
         $columns = $this->columnsAsKeysAndValues(new Thing, ['updated_at'], ['member_id' => 'Member NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
-        return view('CRUD.show', [$this->modelObjectName => json_decode((new ThingResource($thing))->toJson(), true)], ['columns' => $columns]);
+        return view('crud.show', [$this->modelObjectName => json_decode((new ThingResource($thing))->toJson(), true)], ['columns' => $columns]);
     }
 
     /**
@@ -74,7 +74,7 @@ class ThingController extends Controller
     public function edit(Thing $thing)
     {
         $columsWithDataTypes = $this->getColumnType(new Thing(), ['id', 'created_at', 'updated_at']);
-        return view('CRUD.edit', [$this->modelObjectName => $thing, 'columsWithDataTypes'=>$columsWithDataTypes]);
+        return view('crud.edit', [$this->modelObjectName => $thing, 'columsWithDataTypes'=>$columsWithDataTypes]);
     }
 
     /**

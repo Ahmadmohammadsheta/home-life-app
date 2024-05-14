@@ -7,9 +7,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Eloquent\Model;
 use App\Repository\CategoryRepositoryInterface;
+use App\Http\Traits\SqlDataRetrievable;
 
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
+    use SqlDataRetrievable;
+
    /**
     * CategoryRepository constructor.
     *
@@ -112,23 +115,23 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
     /**
      * @return array
-     * get only the final Category of shown category
+     * get only the final Category of shown category (things)
      */
-    public function finalCategory($parentId): array
+    public function thingsCategories($parentId): array
     {
         $all = $this->model
             ->where('is_parent', false)
             ->get();
-            
-        $finalCategories = [];
+
+        $thingsCategories = [];
         foreach ($all as $single) {
             $all_parents_ids = explode(',', $single->all_parents_ids);
             if (in_array($parentId, $all_parents_ids)) {
-                array_push($finalCategories, $single);
-                // $finalCategories[] = $single;
+                array_push($thingsCategories, $single);
+                // $thingsCategories[] = $single;
             }
         }
-        return $finalCategories;
+        return $thingsCategories;
     }
 
     /**
@@ -151,7 +154,9 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     {
         !array_key_exists('image', $attributes) ?: $attributes['image'] = $this->setImage($attributes['image'], 'categories');
 
-        $attributes['all_parents_ids'] = implode(',', [$this->find($attributes['id'])->all_parents_ids, $this->find($attributes['id'])->id]);
+        if (isset($attributes['id'])) {
+            $attributes['all_parents_ids'] = implode(',', [$this->find($attributes['id'])->all_parents_ids, $this->find($attributes['id'])->id]);
+        }
 
         isset($attributes['is_parent']) ?: $attributes['is_parent'] = false;
 
@@ -196,5 +201,29 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
         $data->delete();
         return $data;
+    }
+
+   /**
+    * columnsAsKeysAndValues
+    * @return array
+    */
+    public function columns(): array
+    {
+        if (route('categories.index')) {
+            $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at', 'all_parents_ids'], ['parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+        } else {
+            $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at'], ['all_parents_ids' => 'PARENTS', 'parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+        }
+
+        return $columns;
+    }
+
+   /**
+    * getColumnType
+    * @return array
+    */
+    public function columnsTypes(): array
+    {
+        return $this->getColumnType(new Category(), ['id', 'created_at', 'updated_at', 'all_parents_ids']);
     }
 }
