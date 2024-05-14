@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('image')->nullable();
             $table->bigInteger('parent_id')->default(0);
+            // $table->foreignId('parent_id')->nullable(must be before any another modifier)->constrained('categories', 'id')
+            // ->nullOnDelet()->cascadeOnDelete()->restrictOnDelete();
             $table->unsignedBigInteger('type_id');
             $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
             $table->timestamps();
