@@ -67,6 +67,25 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
     /**
      * @return array
+     * get all the children Category of shown category ass an array
+     */
+    public function getAllChildrenIds($parentId): array
+    {
+        $currentId = $parentId;
+
+        $childrenIds = [];
+
+        $children = $this->getAllChildren($currentId);
+
+        foreach ($children as $child) {
+            $childrenIds[] = $child->id;
+        }
+
+        return $childrenIds;
+    }
+
+    /**
+     * @return array
      * get all the children Category of shown category as a tree
      */
     public function getAllChildrenTree(Category $category): array
@@ -152,7 +171,8 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     */
     public function create(array $attributes): Model
     {
-        !array_key_exists('image', $attributes) ?: $attributes['image'] = $this->setImage($attributes['image'], 'categories');
+        // The code has been moved to Model attributes cast
+        // !array_key_exists('image', $attributes) ?: $attributes['image'] = $this->setImage($attributes['image'], 'categories');
 
         // if the new category is a child
         if (isset($attributes['id'])) {
@@ -177,20 +197,18 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
         if (array_key_exists('image', $attributes)) {
             $this->deleteImage('categories', $data['image']); // Working only if file exists
-            $attributes['image'] = $this->setImage($attributes['image'], 'categories');
+            // The code has been moved to Model attributes cast
+            // $attributes['image'] = $this->setImage($attributes['image'], 'categories');
         }
 
-        if ($attributes['parent_id'] > 0) {
+        if (isset($attributes['parent_id'])) {
             $attributes['all_parents_ids'] = implode(',', [$this->find($attributes['parent_id'])->all_parents_ids, $this->find($attributes['parent_id'])->id]);
         }
 
         isset($attributes['is_parent']) ? $attributes['is_parent'] = true : $attributes['is_parent'] = false;
 
         $data->update($attributes);
-
-        $this->getAllChildrenTree($data);
-        $this->getAllThingsTree($data);
-
+        
         return $data;
     }
 
