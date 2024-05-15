@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Http\Traits\ImageProccessingTrait;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, ImageProccessingTrait;
     protected $fillable = ['name', 'image', 'parent_id', 'type_id', 'is_parent', 'all_parents_ids'];
 
     protected $parentsIds;
@@ -62,6 +63,19 @@ class Category extends Model
     {
         return Attribute::make(
             get: fn ($value) => (new Carbon($value))->format('Y-m-d')
+        );
+    }
+
+    /**
+    * Created At Format Attribute.
+    *
+    * @return Attribute
+    */
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => $this->setImage($value, 'categories'),
+            get: fn ($value) => $this->getImage($value, 'categories')
         );
     }
 }

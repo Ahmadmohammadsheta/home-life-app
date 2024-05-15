@@ -9,6 +9,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 Trait ImageProccessingTrait
 {
     // Mahmoud Kssab
+    private $storage = 'storage/';
     private $path = 'attachments';
 
     /**
@@ -64,8 +65,14 @@ Trait ImageProccessingTrait
         $imageName = time().$img->getClientOriginalName();
         $image = $manager->read($img); // read image from image system
         $image->scale($width, $height); // resize image
+
+        $image->toJpeg()->save(storage_path("app/public/" . $this->path . "/" . $path . '/' . $imageName)); // (working) save modified image in new format in folder
+
         // $image->place($image); // insert watermark
-        $image->toJpeg()->save(base_path("public/".$this->path. "/" .$path. '/' . $imageName)); // save modified image in new format in folder
+        // $image->toJpeg()->save(base_path("public/storage/" . $this->path . "/" . $path . '/' . $imageName)); // (working)  save modified image in new format in folder
+        // $image->toJpeg()->save(public_path("storage/" . $this->path . "/" . $path . '/' . $imageName)); // (working) save modified image in new format in folder
+
+
         return $imageName; // save image name in database
         // return $this->path. "/" .$path. '/' . $imageName; // save image name in database
     }
@@ -80,6 +87,14 @@ Trait ImageProccessingTrait
             array_push($imagesName, [ $column => $this->setImage($image, $path, $width, $height)]);
         }
         return $imagesName;
+    }
+
+    /**
+     * AMA Set array of Images
+     */
+    public function getImage($image, $path)
+    {
+        return $this->storage . $this->path . "/" . $path . '/' . $image;
     }
 
     /**

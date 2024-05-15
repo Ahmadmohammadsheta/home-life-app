@@ -66,8 +66,8 @@
                         @foreach ($columnsAsValues as $columnsAsValue)
                         @if ($columnsAsValue == "image")
                         <div class="border-bottom-0 text-center" style="width: 240px; hieght:180px">
-                            <a href="{{ asset("attachments/categories/".$$modelObjectName[$columnsAsValue]) }}" target="_blank">
-                                <img src="{{ (asset("attachments/categories/".$$modelObjectName[$columnsAsValue])) }}" alt="My Image">
+                            <a href="{{ asset($$modelObjectName[$columnsAsValue]) }}" target="_blank">
+                                <img src="{{ (asset($$modelObjectName[$columnsAsValue])) }}" alt="My Image">
                             </a>
                         </div>
                         @endif

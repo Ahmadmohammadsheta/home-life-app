@@ -20,7 +20,7 @@
             <form action="{{ route($tableName.'.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <input type="text" name="id" value="{{ $id }}">
+                <input type="hidden" name="id" value="{{ $id }}">
 
                 @include('crud.includes.form._form', ['action' => 'Create'])
 

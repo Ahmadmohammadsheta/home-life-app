@@ -31,8 +31,8 @@
 
                             @if ($columnsAsValue == "image")
                             <td class="border-bottom-0 text-center">
-                                <a href="{{ asset("attachments/categories/".$item->$columnsAsValue) }}" target="_blank">
-                                    <img src="{{ asset("attachments/categories/".$item->$columnsAsValue) }}" alt="My Image" style="width:45px; height:30px">
+                                <a href="{{ asset($item->$columnsAsValue) }}" target="_blank">
+                                    <img src="{{ asset($item->$columnsAsValue) }}" alt="My Image" style="width:45px; height:30px">
                                 </a>
                             </td>
                             @else
