@@ -10,7 +10,7 @@
     @if (Str::contains($$modelObjectName->$modelObjectNameValue, '.'))
     <div class="mb-3">
         <a href="{{ asset($$modelObjectName->$modelObjectNameValue) }}" target="_blank">
-            <img src="{{ asset($$modelObjectName->$modelObjectNameValue) }}" alt="My Image" style="width:45px; height:30px">
+            <img src="{{ asset($$modelObjectName->$modelObjectNameValue) }}" alt="My Image" style="width:100px; height:75px">
         </a>
     </div>
     @endif

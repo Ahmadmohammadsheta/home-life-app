@@ -9,7 +9,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 Trait ImageProccessingTrait
 {
     // Mahmoud Kssab
-    private $storage = 'storage/';
+    private $storage = 'storage';
     private $path = 'attachments';
 
     /**
@@ -94,7 +94,7 @@ Trait ImageProccessingTrait
      */
     public function getImage($image, $path)
     {
-        return $this->storage . $this->path . "/" . $path . '/' . $image;
+        return $this->storage . '/' . $this->path . '/' . $path . '/' . $image;
     }
 
     /**
@@ -139,21 +139,22 @@ Trait ImageProccessingTrait
     /**
      * Mahmoud Kssab Delete image
      */
-    public function deleteImage($location, $filename)
+    public function deleteImage($image, $path = null)
     {
-        if (file_exists($this->path . '/' . $location . '/' . $filename)) {
-            return File::delete($this->path . '/' . $location . '/' . $filename);
-            // return Storage::disk('public')->delete($this->path . '/' . $location . '/' . $filename); // if running cmd link::storage
+        ($path == null) ?: $path = $path.'/';
+        
+        if (file_exists($path . $image)) {
+            return File::delete($path . $image);
         }
     }
 
     /**
      * Mahmoud Kssab Delete images
      */
-    public function deleteImages($images, $location)
+    public function deleteImages($images, $path)
     {
         foreach ($images as $image) {
-            $this->deleteImage($location, $image);
+            $this->deleteImage($path, $image);
         }
     }
 
