@@ -5,5 +5,5 @@
 
 @endif
 
-@include('crud._table')
+@include('crud.includes.table._table')
 

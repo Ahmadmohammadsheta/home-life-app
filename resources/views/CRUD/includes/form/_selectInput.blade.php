@@ -21,6 +21,6 @@
     </select>
     @endif
 
-    @include('crud._errors')
+    @include('crud.includes.general._errors')
 </div>
 

@@ -21,12 +21,13 @@
                 @csrf
                 @method('PUT')
 
-                @include('crud._form', ['action' => 'Update'])
+                @include('crud.includes.form._form', ['action' => 'Update'])
             </form>
         </div>
     </div>
     <!-- row closed -->
 @endsection
+
 @section('js')
 @endsection
 

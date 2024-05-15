@@ -8,21 +8,21 @@
 
     <label style="text-align: center important; display: inline-block" class="text-primary">{{ __(ucfirst($column['name'])) }}</label>
 
-    @if ($column['type'] == "bigint") {{-- for relation model --}}
+    @if ($column['type'] == "bigint") <!-- for relation model -->
 
-        @include('crud._selectInput')
+        @include('crud.includes.form._selectInput')
 
-    @elseif ($column['type'] == "varchar" && $column['name'] !== "image") {{-- the normal inputs --}}
+    @elseif ($column['type'] == "varchar" && $column['name'] !== "image") <!-- the normal inputs -->
 
-        @include('crud._stringInput')
+        @include('crud.includes.form._stringInput')
 
     @elseif ($column['name'] == "image")
 
-        @include('crud._imgInput')
+        @include('crud.includes.form._imgInput')
 
-    @elseIf ($column['name'] == "is_parent") {{-- radio input --}}
+    @elseIf ($column['name'] == "is_parent") <!-- radio input -->
 
-        @include('crud._radioInput')
+        @include('crud.includes.form._radioInput')
 
     @endif
 

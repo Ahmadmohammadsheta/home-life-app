@@ -10,17 +10,8 @@
     <div class="row">
         <!--div-->
         <div class="col-xl-12">
-            <!--/AMA.Sessions div-->
             <div class="card-header pb-0">
-                @if (Route::currentRouteName() === "$tableName.show")
-                <div class="d-flex justify-content-between">
-                    <a class="btn btn-primary btn-block" href="{{ route($tableName.'.create', ['id' => request()->route("$modelObjectName.id")]) }}">{{ __('ADD RELATED') }}</a>
-                </div>
-                @else
-                <div class="d-flex justify-content-between">
-                    <a class="btn btn-primary btn-block" href="{{ route($tableName.'.create') }}">{{ __('ADD') }}</a>
-                </div>
-                @endif
+                @include('crud.includes.table._tableHeader')
             </div>
 
             <div class="table table-responsive table-stripped">
@@ -52,18 +43,12 @@
                             @endforeach
 
                             <td class="border-bottom-0 text-center">
-                                <a class="btn btn-sm btn-info" href="{{ route($tableName.'.edit', [$modelObjectName => json_encode($item->id)]) }}"><i class="lni lni-pencil-alt"></i></a>
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-danger btn-sm text-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{$item->id}}">
-                                    <i class="lni lni-trash-can"></i>
-                                </button>
-
-                                <a class="btn btn-sm btn-primary" href="{{ route($tableName.'.show', [$modelObjectName => json_encode($item->id)]) }}"><i class="lni lni-book"></i></a>
+                                @include('crud.includes.table._tableActions')
                             </td>
                         </tr>
 
                         <!-- Modal -->
-                        @include('crud._modal')
+                        @include('crud.includes.general._modal')
 
                         @endforeach
                     </tbody>

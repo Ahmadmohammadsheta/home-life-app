@@ -14,7 +14,7 @@
 
 @section('content')
     <!-- row -->
-    @if (View::exists("crud.$tableName.index")) @include("crud.$tableName.index") @else @include('crud._table') @endif
+    @if (View::exists("crud.$tableName.index")) @include("crud.$tableName.index") @else @include('crud.includes.table._table') @endif
     <!-- row closed -->
 @endsection
 

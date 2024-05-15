@@ -2,6 +2,6 @@
 
     @php($data = $allRelatedThings)
 
-    @include('crud._table')
+    @include('crud.includes.table._table')
 
 @endif
