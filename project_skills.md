@@ -83,10 +83,10 @@ Blade: [
     - @if (Route::currentRouteName() === 'home')
      @endif
     - request()->route('category.id')
-    - @if (\View::exists("crud.$tableName.index")) @include("crud.$tableName.index") @endif
+    - @if (\View::exists("$tableName.index")) @include("$tableName.index") @endif
     - includeif()
     - Str::contains($column['name'], '_id')
-    - @includeIf("crud.$tableName.show", ['page' => 'name'])
+    - @includeIf("$tableName.show", ['page' => 'name'])
     - @yeild("name", ['page' => 'name'])
     - @section('page-header', {{ __(ucfirst($tableName)) }})
 ]

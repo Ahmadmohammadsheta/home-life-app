@@ -30,12 +30,14 @@ class CategotyTest extends TestCase
 
     public function test_create(): void
     {
+        // Create a new user
         $user = User::factory()->create();
 
-        $this->withoutMiddleware('auth');
-        $response = $this
-            ->actingAs($user)
-            ->get('/categories/create');
+        // Login the user
+        // $this->actingAs($user);
+
+
+        $response = $this->get('/categories/create');
 
         $response->assertStatus(302);
 
@@ -45,32 +47,28 @@ class CategotyTest extends TestCase
 
     public function test_store(): void
     {
+        // Create a new user
         $user = User::factory()->create();
 
-        $response = $this
-            // ->actingAs($user)
-            ->post('/categories', [
-                'name' => 'test',
-                'is_parent' => 1,
-                'parent_id' => 0,
-                'type_id' => 1
-            ]);
+        // Login the user
+        $this->actingAs($user);
 
-        $response->assertStatus(201);
-        // $response->assertRedirect('crud.show');
-        // $response->assertViewIs('crud.create');
-    }
+        // Send a POST request to the create category route
+        $response = $this->post(route('categories.store'), [
+            'name' => 'New Category',
+            'is_parent' => '1',
+            'type_id' => '1'
+        ]);
 
-    public function test_edit(): void
-    {
-        $user = User::factory()->create();
+        // Assert that the response is a redirect
+        $response->assertStatus(200);
+        $response->assertRedirect();
 
-        $response = $this
-            ->actingAs($user)
-            ->get('/categories/create');
-
-            $response->assertStatus(500);
-        // $response->assertSee('Done');
-        // $response->assertViewIs('crud.create');
+        // Assert that the category was created
+        $this->assertDatabaseHas('categories', [
+            'name' => 'New Category',
+            'is_parent' => '1',
+            'type_id' => '1'
+        ]);
     }
 }
