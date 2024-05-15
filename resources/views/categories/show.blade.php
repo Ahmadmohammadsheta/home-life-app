@@ -30,25 +30,25 @@
 
     @section('tab1')
     <div class="tab-pane fade" id="pills-1" role="tabpanel" aria-labelledby="pills-1-tab" tabindex="0">
-        @includeIf("crud.$tableName.children_from_relation")
+        @includeIf("$tableName.children_from_relation")
     </div>
     @endsection
 
     @section('tab2')
     <div class="tab-pane fade" id="pills-2" role="tabpanel" aria-labelledby="pills-2-tab" tabindex="0">
-        @includeIf("crud.$tableName.index")
+        @includeIf("$tableName.index")
     </div>
     @endsection
 
     @section('tab3')
     <div class="tab-pane fade" id="pills-3" role="tabpanel" aria-labelledby="pills-3-tab" tabindex="0">
-        @includeIf("crud.$tableName.this_non_parent")
+        @includeIf("$tableName.this_non_parent")
     </div>
     @endsection
 
     @section('tab4')
     <div class="tab-pane fade" id="pills-4" role="tabpanel" aria-labelledby="pills-4-tab" tabindex="0">
-        @includeIf("crud.$tableName.non_parent")
+        @includeIf("$tableName.non_parent")
     </div>
     @endsection
 

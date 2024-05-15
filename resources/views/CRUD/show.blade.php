@@ -11,7 +11,7 @@
 
 @extends('layouts.master')
 
-@includeIf("crud.$tableName.show", ['page' => 'name'])
+@includeIf("$tableName.show", ['page' => 'name'])
 
 @section('title', "/Show ".ucfirst($modelObjectName))
 
