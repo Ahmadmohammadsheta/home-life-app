@@ -154,8 +154,12 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     {
         !array_key_exists('image', $attributes) ?: $attributes['image'] = $this->setImage($attributes['image'], 'categories');
 
+        // if the new category is a child
         if (isset($attributes['id'])) {
-            $attributes['all_parents_ids'] = implode(',', [$this->find($attributes['id'])->all_parents_ids, $this->find($attributes['id'])->id]);
+
+            $all_parents_ids = $this->find($attributes['id'])->all_parents_ids;
+
+            $attributes['all_parents_ids'] = $all_parents_ids != null ? implode(',', [$all_parents_ids, $attributes['id']]) : $attributes['id'];
         }
 
         isset($attributes['is_parent']) ?: $attributes['is_parent'] = false;

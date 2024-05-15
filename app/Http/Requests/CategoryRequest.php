@@ -12,6 +12,9 @@ class CategoryRequest extends FormRequest
     private function storeRequest()
     {
         return [
+            'id' => [
+                'required', 'exists:categories,id'
+            ],
             'name' => ['required', 'string', 'min:3', 'max:255'], //AMA>true
             'parent_id' =>[
                 'nullable', 'int', 'exists:categories,id'
