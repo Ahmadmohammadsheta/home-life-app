@@ -13,15 +13,7 @@ use App\Http\Traits\SqlDataRetrievable; // AMA custom trait
 class CategroyService
 {
     use SqlDataRetrievable; // AMA custom use
-
-    /**
-     * AMA custom
-     * Properties
-     */
-    // private $parent;
-    // private $childService;
-    // private $thingService;
-
+    
     /**
      * Repository constructor method
      */

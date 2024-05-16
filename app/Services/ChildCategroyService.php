@@ -3,33 +3,15 @@
 namespace App\Services;
 
 use App\Models\Category;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use App\Repository\CategoryRepositoryInterface;
 
 class ChildCategroyService
 {
     /**
-     * AMA custom
-     * Properties
-     */
-    // private $repository;
-
-    /**
      * Repository constructor method
      */
     public function __construct(private CategoryRepositoryInterface $repository) {}
-
-    /**
-     * @return Collection
-     * get only the child of shown category
-     */
-    public function childCategories($parentId): Collection
-    {
-        return Category::where(['parent_id' => $parentId])
-            ->with(['parent', 'children'])
-            ->get();
-    }
 
     /**
      * @return array

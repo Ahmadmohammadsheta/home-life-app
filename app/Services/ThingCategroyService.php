@@ -9,13 +9,6 @@ use Illuminate\Support\Facades\Route;
 class ThingCategroyService
 {
     /**
-     * AMA custom
-     * Properties
-     */
-    // private $repository;
-    // private $child;
-
-    /**
      * Repository constructor method
      */
     public function __construct(

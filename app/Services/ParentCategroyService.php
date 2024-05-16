@@ -8,12 +8,6 @@ use Illuminate\Support\Collection;
 class ParentCategroyService
 {
     /**
-     * AMA custom
-     * Properties
-     */
-    // private $child;
-
-    /**
      * Repository constructor method
      */
     public function __construct(private ChildCategroyService $child) {}
