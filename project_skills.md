@@ -1,5 +1,28 @@
 project name: home-life-app
 
+PHP: [
+    - Nesting inline if-else statements working
+    return request()->wantsJson() ? response()->json($data) :
+            (
+                $data->parent_id == 0 ? redirect()->route($this->uriRoute.'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']) :
+                redirect()->route($this->uriRoute.'.show', ['category' => $data->parent_id])->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح'])
+            );
+
+    - all swith cases working 
+    switch (true) {
+        case (request()->wantsJson()):
+            $return = response()->json($data);
+            break;
+        case ($data->parent_id > 0):
+            $return = redirect()->route($this->uriRoute.'.show', ['category' => $data->parent_id])->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
+            break;
+        default:
+            $return = redirect()->route($this->uriRoute.'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
+    }
+
+    return $return;
+]
+
 setup: [
     - composer global require laravel/installer // only install first time
     - laravel new home-life-app // (laravel new) use in every new app installing
@@ -72,6 +95,7 @@ Digging Deeper: [
 
 DesignPattern: [
     - Repository & RepositoryInterface
+    - Service Class
 ]
 
 Traits: [
@@ -89,4 +113,12 @@ Blade: [
     - @includeIf("$tableName.show", ['page' => 'name'])
     - @yeild("name", ['page' => 'name'])
     - @section('page-header', {{ __(ucfirst($tableName)) }})
+]
+
+Request: [
+    
+]
+
+Unit Test [
+    - Category CRUD tests are success;
 ]

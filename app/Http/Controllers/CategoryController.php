@@ -8,24 +8,48 @@ use Illuminate\Http\Request;
 use App\Repository\CategoryRepositoryInterface;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Category\NonParentResource;
+use App\Services\CategroyService;
+use App\Services\childCategroyService;
+use App\Services\ParentCategroyService;
+use App\Services\ThingCategroyService;
 
 class CategoryController extends Controller
 {
     /**
+     * AMA custom
+     * Properties
+     */
+    public $parentService;
+    public $childService;
+    public $thingService;
+
+    /**
      * Repository constructor method
      */
-    public function __construct(CategoryRepositoryInterface $repository) {
-        $this->repository = $repository;
-        $this->additionalData = $this->additionalData(new Category, 'category');
-        $this->uriRoute = $this->additionalData['tableName'];
-    }
+    public function __construct(
+        CategoryRepositoryInterface $repository,
+        CategroyService $service,
+        ParentCategroyService $parentService,
+        ChildCategroyService $childService,
+        ThingCategroyService $thingService,
+        ) {
+            $this->repository = $repository;
+            $this->service = $service;
+            $this->parentService = $parentService;
+            $this->childService = $childService;
+            $this->thingService = $thingService;
+            $this->additionalData = $this->additionalData(new Category, 'category');
+            $this->uriRoute = $this->additionalData['tableName'];
+        }
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('crud.index', ['data' => CategoryResource::collection($this->repository->parentCategories())], ['columns' => $this->repository->columns()]);
+        return view('crud.index',
+        ['data' => CategoryResource::collection($this->parentService->parentCategories())],
+        ['columns' => $this->service->columns()]);
     }
 
     /**
@@ -33,11 +57,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return response()->view('crud.create', [
-            'category' => new Category(),
-            'columsWithDataTypes' => $this->repository->columnsTypes(),
-            'allChildren' => []
-        ]);
+        $returnData = $this->service->returnToFormData();
+
+        return response()->view('crud.create', $returnData);
     }
 
     /**
@@ -45,18 +67,13 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        try {
-            $data = $this->repository->create($request->validated());
+        $data = $this->repository->create($request->validated());
 
-            if ($data->parent_id == 0) {
-                return redirect()->route($this->uriRoute.'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
-            }
-
-            return redirect()->route($this->uriRoute.'.show', ['category' => $data->parent_id])->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
-
-        } catch (\Throwable $th) {
-            return  redirect()->back()->with(['session' => 'danger', 'message' => 'An error occured']);
-        }
+        return request()->wantsJson() ? response()->json($data) :
+            (
+                $data->parent_id == 0 ? redirect()->route($this->uriRoute.'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']) :
+                redirect()->route($this->uriRoute.'.show', ['category' => $data->parent_id])->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح'])
+            );
     }
 
     /**
@@ -64,16 +81,12 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        $return = [$this->additionalData['modelObjectName'] => new CategoryResource($category),
-            'data' => CategoryResource::collection($this->repository->getAllChildren($category->id)), // get all the children data in the {$data}
-            'childrenData' => CategoryResource::collection($category->children), // get this children data only
-            'allRelatedThings' => NonParentResource::collection($this->repository->thingsCategories($category->id)), // get all children data has no parent (all things)
-            'thisRelatedThings' => NonParentResource::collection($category->things) // get this children data has no parent (this things)
-        ];
+
+        $returnData = $this->service->returnToShowData($category);
 
         return request()->wantsJson() ?
-        response()->json($return) :
-        view('crud.show', $return, ['columns' => $this->repository->columns()]);
+        response()->json($returnData) :
+        view('crud.show', $returnData, ['columns' => $this->service->columns()]);
     }
 
     /**
@@ -81,11 +94,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('crud.edit', [
-            $this->additionalData['modelObjectName'] => $category,
-            'columsWithDataTypes' => $this->repository->columnsTypes(),
-            'allChildren' => $this->repository->getAllChildrenIds($category->id)
-        ]);
+        $returnData = $this->service->returnToFormData($category);
+
+        return view('crud.edit', $returnData);
     }
 
     /**
@@ -97,7 +108,11 @@ class CategoryController extends Controller
 
         return $request->wantsJson() ?
         $this->sendResponse($data, "تم التعديل بنجاح", 200) :
-        redirect()->route(request()->route()->controller->additionalData['tableName'].'.show', [$this->additionalData['modelObjectName'] => $data->parent_id ?: $data->id])->with('success', 'تم التعديل بنجاح');
+        redirect()->route($this->uriRoute.'.show',
+            [
+                $this->additionalData['modelObjectName'] => $data->parent_id ?: $data->id
+            ])
+            ->with('success', 'تم التعديل بنجاح');
     }
 
     /**
@@ -106,8 +121,9 @@ class CategoryController extends Controller
     public function destroy(Request $request, Category $category)
     {
         $this->repository->delete($category->id);
+
         return $request->wantsJson() ?
-        $this->sendResponse("تم الحذف بنجاح", 200) :
-        redirect()->route(request()->route()->controller->additionalData['tableName'].'.index')->with('success', 'تم الحذف بنجاح');
+        response()->json("تم الحذف بنجاح", 200) :
+        redirect()->route($this->uriRoute.'.index')->with('success', 'تم الحذف بنجاح');
     }
 }

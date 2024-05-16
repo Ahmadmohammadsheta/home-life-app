@@ -22,6 +22,7 @@ class Controller extends BaseController
     public $model;
     public $additionalData;
     public $uriRoute;
+    public $service;
 
     /**
      * AMA custom

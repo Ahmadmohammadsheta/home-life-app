@@ -13,7 +13,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'id' => [
-                'required', 'exists:categories,id'
+                'nullable', 'exists:categories,id'
             ],
             'name' => ['required', 'string', 'min:3', 'max:255'], //AMA>true
             'parent_id' =>[
