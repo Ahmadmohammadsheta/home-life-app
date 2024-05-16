@@ -57,9 +57,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $returnData = $this->service->returnToFormData();
+        $data = $this->service->returnToFormData();
 
-        return response()->view('crud.create', $returnData);
+        return response()->view('crud.create', $data);
     }
 
     /**
@@ -82,11 +82,11 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
 
-        $returnData = $this->service->returnToShowData($category);
+        $data = $this->service->returnToShowData($category);
 
         return request()->wantsJson() ?
-        response()->json($returnData) :
-        view('crud.show', $returnData, ['columns' => $this->service->columns()]);
+        response()->json($data) :
+        view('crud.show', $data, ['columns' => $this->service->columns()]);
     }
 
     /**
@@ -94,9 +94,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        $returnData = $this->service->returnToFormData($category);
+        $data = $this->service->returnToFormData($category);
 
-        return view('crud.edit', $returnData);
+        return view('crud.edit', $data);
     }
 
     /**

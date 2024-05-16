@@ -29,11 +29,7 @@ class CategroyService
         private ParentCategroyService $parent,
         private ChildCategroyService $childService,
         private ThingCategroyService $thingService
-        ) {
-            $this->parent = $parent;
-            $this->childService = $childService;
-            $this->thingService = $thingService;
-    }
+        ) {}
 
    /**
     * columnsAsKeysAndValues
@@ -41,14 +37,14 @@ class CategroyService
     */
     public function returnToShowData(Category $category): array
     {
-        $returnData = [
+        $data = [
             'category' => new CategoryResource($category),
             'data' => CategoryResource::collection($this->childService->getAllChildren($category->id)), // get all the children data in the {$data}
             'childrenData' => CategoryResource::collection($category->children), // get this children data only
-            'allRelatedThings' => NonParentResource::collection($this->thingService->thingsCategories($category->id)), // get all children data has no parent (all things)
+            'allRelatedThings' => NonParentResource::collection($this->thingService->getAllThingsCategories($category->id)), // get all children data has no parent (all things)
             'thisRelatedThings' => NonParentResource::collection($category->things) // get this children data has no parent (this things)
         ];
-        return $returnData;
+        return $data;
     }
 
    /**
@@ -57,14 +53,14 @@ class CategroyService
     */
     public function returnToFormData(Category $category = null): array
     {
-        $returnData = [
+        $data = [
             'category' => $category ?: $category = new Category(),
             'columsWithDataTypes' => $this->columnsTypes(),
             'arrayForSelectInput' => $this->arrayForSelectInput(isset($category) ? $category->id : null),
             'allChildren' => isset($category) ? $this->childService->getAllChildrenIds($category->id) : []
         ];
 
-        return $returnData;
+        return $data;
     }
 
    /**
@@ -100,7 +96,7 @@ class CategroyService
 
         $types = (new TypeRepository(new Type))->all();
 
-        $categories = isset($categoryId) ? $this->parent->categoriesWhereNotMeWhereNotChild($categoryId) : Category::all();
+        $categories = isset($categoryId) ? $this->parent->categoriesWhereNotThisWhereNotChild($categoryId) : Category::all();
         $arrayForSelectInput = [
             [
                 'data' => $categories,

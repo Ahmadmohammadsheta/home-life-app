@@ -21,16 +21,13 @@ class ThingCategroyService
     public function __construct(
         private CategoryRepositoryInterface $repository,
         private ChildCategroyService $child
-        ) {
-            $this->repository = $repository;
-            $this->child = $child;
-    }
+        ) {}
 
     /**
      * @return array
      * get all the things Category of shown category as a tree
      */
-    public function getAllThingsTree(Category $category): array
+    public function getAllThingsCategoriesTree(Category $category): array
     {
         $tree = [
             'id' => $category->id,
@@ -54,19 +51,18 @@ class ThingCategroyService
      * @return array
      * get only the final Category of shown category (things)
      */
-    public function thingsCategories($parentId): array
+    public function getAllThingsCategories($parentId): array
     {
         $all = Category::where('is_parent', false)
             ->get();
 
-        $thingsCategories = [];
+        $getAllThingsCategories = [];
         foreach ($all as $single) {
             $all_parents_ids = explode(',', $single->all_parents_ids);
             if (in_array($parentId, $all_parents_ids)) {
-                array_push($thingsCategories, $single);
-                // $thingsCategories[] = $single;
+                array_push($getAllThingsCategories, $single);
             }
         }
-        return $thingsCategories;
+        return $getAllThingsCategories;
     }
 }

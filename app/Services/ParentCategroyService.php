@@ -16,9 +16,7 @@ class ParentCategroyService
     /**
      * Repository constructor method
      */
-    public function __construct(private ChildCategroyService $child) {
-        $this->child = $child;
-    }
+    public function __construct(private ChildCategroyService $child) {}
 
     /**
      * @return Collection
@@ -27,21 +25,10 @@ class ParentCategroyService
     public function parentCategories(): Collection
     {
         $category =Category::where(['parent_id' => 0])->first();
-        // if ($category->types()->exists()) {
+        // if ($category->type()->exists()) {
         //     throw new \Exception("$category already has an invoice");
         // }
         return Category::where(['parent_id' => 0])->get();
-    }
-
-    /**
-     * @param $id
-     * get only the child of shown category
-     */
-    public function parents_ids($id)
-    {
-        $parent = Category::where(['id' => $id])->with('parent')->get();
-
-        return $parent;
     }
 
    /**
@@ -49,7 +36,7 @@ class ParentCategroyService
     *
     * @return Collection
     */
-    public function categoriesWhereNotMeWhereNotChild($id): Collection
+    public function categoriesWhereNotThisWhereNotChild($id): Collection
     {
         $idArray = $this->child->getAllChildrenIds($id);
         array_push($idArray, $id);

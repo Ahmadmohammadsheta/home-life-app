@@ -18,9 +18,7 @@ class ChildCategroyService
     /**
      * Repository constructor method
      */
-    public function __construct(private CategoryRepositoryInterface $repository) {
-        $this->repository = $repository;
-    }
+    public function __construct(private CategoryRepositoryInterface $repository) {}
 
     /**
      * @return Collection
