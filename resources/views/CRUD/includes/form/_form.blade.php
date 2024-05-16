@@ -10,7 +10,7 @@
 
     @if ($column['type'] == "bigint") <!-- for relation model -->
 
-        @include('crud.includes.form._selectInput')
+        @include('crud.includes.form._selectInput2')
 
     @elseif ($column['type'] == "varchar" && $column['name'] !== "image") <!-- the normal inputs -->
 
