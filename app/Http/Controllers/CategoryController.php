@@ -48,7 +48,7 @@ class CategoryController extends Controller
     public function index()
     {
         return view('crud.index',
-        ['data' => CategoryResource::collection($this->parentService->parentCategories())],
+        ['data' => CategoryResource::collection($this->parentService->allParents())],
         ['columns' => $this->service->columns()]);
     }
 

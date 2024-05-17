@@ -32,78 +32,6 @@ class CategoryResource extends JsonResource
         return $parents;
     }
 
-    public function getAllChildren($parentId): array
-    {
-        $currentId = $parentId;
-
-        $children = [];
-        $currentChildren = Category::where('parent_id', $currentId)->get();
-
-        foreach ($currentChildren as $child) {
-            if ($child->is_parent === 0) {
-                $children[] = $child;
-                $children = array_merge($children, $this->getAllChildren($child->id));
-            }
-        }
-
-        return $children;
-    }
-
-    public function getAllChildrenNames($parentId): array
-    {
-        // if (!empty($this->getAllChildren($parentId))) {
-            foreach ($this->getAllChildren($parentId) as $child) {
-                $children[] = $child->name; // Access child attributes
-            }
-        // } else {
-            $children = ["None"];
-        // }
-        return $children;
-    }
-
-    public function getRecruiterTree(Category $category)
-    {
-        $tree = [
-            'id' => $category->id,
-            'name' => $category->name,
-            'children' => [],
-        ];
-
-        foreach ($category->children as $child) {
-            $tree['children'][] = $this->getRecruiterTree($child);
-        }
-
-        return $tree;
-    }
-
-    public function get2() {
-
-        $currentId = $this->parent_id;
-
-        $children = [];
-        $currentChildren = Category::where('parent_id', $currentId)->get();
-
-        foreach ($currentChildren as $child) {
-            if ($child->is_parent === 0) {
-                $children[] = $child;
-                $children = array_merge($children, $this->children());
-            }
-        }
-
-        $recruiter = Category::find($this->id); // Assuming ID 1 exists
-
-        // Get all direct children of recruiter with ID 1
-        $children = $recruiter->children;
-
-        // Loop through children and access their data
-        foreach ($children as $child) {
-            $children[] =  $child->name;
-        }
-
-        return $children;
-    }
-
-
 // Access data in the tree structure
 
     /**
@@ -113,7 +41,6 @@ class CategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // dd($this->getAllChildren($this->id));
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -125,7 +52,6 @@ class CategoryResource extends JsonResource
             'type' => $this->type,
             'created_at' => $this->created_at,
             'parents' => $this->getAllParents($this->id),
-            // 'children' => $this->getAllChildren($this->id),
             'all_parents_ids' => '',
             // 'parent' => $this->when($request->has('parent'), optional($this->parent)->toArray()),
             // 'children' => $this->when($request->has('children'), optional($this->children)->toArray()),

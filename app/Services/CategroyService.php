@@ -13,7 +13,7 @@ use App\Http\Traits\SqlDataRetrievable; // AMA custom trait
 class CategroyService
 {
     use SqlDataRetrievable; // AMA custom use
-    
+
     /**
      * Repository constructor method
      */
@@ -31,9 +31,9 @@ class CategroyService
     {
         $data = [
             'category' => new CategoryResource($category),
-            'data' => CategoryResource::collection($this->childService->getAllChildren($category->id)), // get all the children data in the {$data}
+            'data' => CategoryResource::collection($this->childService->allChildrenWhereThisParent($category->id)), // get all the children data in the {$data}
             'childrenData' => CategoryResource::collection($category->children), // get this children data only
-            'allRelatedThings' => NonParentResource::collection($this->thingService->getAllThingsCategories($category->id)), // get all children data has no parent (all things)
+            'allRelatedThings' => NonParentResource::collection($this->thingService->allThingsWhereThisParent($category->id)), // get all children data has no parent (all things)
             'thisRelatedThings' => NonParentResource::collection($category->things) // get this children data has no parent (this things)
         ];
         return $data;
@@ -49,7 +49,7 @@ class CategroyService
             'category' => $category ?: $category = new Category(),
             'columsWithDataTypes' => $this->columnsTypes(),
             'arrayForSelectInput' => $this->arrayForSelectInput(isset($category) ? $category->id : null),
-            'allChildren' => isset($category) ? $this->childService->getAllChildrenIds($category->id) : []
+            'allChildren' => isset($category) ? $this->childService->idsOfAllChildrenWhereThisParent($category->id) : []
         ];
 
         return $data;
@@ -88,7 +88,7 @@ class CategroyService
 
         $types = (new TypeRepository(new Type))->all();
 
-        $categories = isset($categoryId) ? $this->parent->categoriesWhereNotThisWhereNotChild($categoryId) : Category::all();
+        $categories = isset($categoryId) ? $this->parent->parentsWhereNotThis($categoryId) : Category::all();
         $arrayForSelectInput = [
             [
                 'data' => $categories,

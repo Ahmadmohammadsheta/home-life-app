@@ -17,7 +17,7 @@ class ChildCategroyService
      * @return array
      * get all the children Category of shown category ass an array
      */
-    public function getAllChildren($parentId): array
+    public function allChildrenWhereThisParent($parentId): array
     {
         $currentId = $parentId;
 
@@ -27,7 +27,7 @@ class ChildCategroyService
         foreach ($currentChildren as $child) {
             if ($child->is_parent == true) {
                 $children[] = $child;
-                $children = array_merge($children, $this->getAllChildren($child->id));
+                $children = array_merge($children, $this->allChildrenWhereThisParent($child->id));
             }
         }
 
@@ -38,13 +38,13 @@ class ChildCategroyService
      * @return array
      * get all the children Category of shown category ass an array
      */
-    public function getAllChildrenIds($parentId): array
+    public function idsOfAllChildrenWhereThisParent($parentId): array
     {
         $currentId = $parentId;
 
         $childrenIds = [];
 
-        $children = $this->getAllChildren($currentId);
+        $children = $this->allChildrenWhereThisParent($currentId);
 
         foreach ($children as $child) {
             $childrenIds[] = $child->id;
@@ -57,7 +57,7 @@ class ChildCategroyService
      * @return array
      * get all the children Category of shown category as a tree
      */
-    public function getAllChildrenTree(Category $category): array
+    public function allChildrenWhereThisParentAsTree(Category $category): array
     {
         $tree = [
             'id' => $category->id,
@@ -71,7 +71,7 @@ class ChildCategroyService
                 $array['all_parents_ids'] = implode(',', [$this->repository->find($child['parent_id'])->all_parents_ids, $this->repository->find($child['parent_id'])->id]);
                 $child->update($array);
             }
-            $tree['children'][] = $this->getAllChildrenTree($child);
+            $tree['children'][] = $this->allChildrenWhereThisParentAsTree($child);
         }
 
         return $tree;

@@ -20,7 +20,7 @@ class ThingCategroyService
      * @return array
      * get all the things Category of shown category as a tree
      */
-    public function getAllThingsCategoriesTree(Category $category): array
+    public function allThingsWhereThisParentAsTree(Category $category): array
     {
         $tree = [
             'id' => $category->id,
@@ -34,7 +34,7 @@ class ThingCategroyService
                 $array['all_parents_ids'] = implode(',', [$this->repository->find($thing['parent_id'])->all_parents_ids, $this->repository->find($thing['parent_id'])->id]);
                 $thing->update($array);
             }
-            $tree['children'][] = $this->child->getAllChildrenTree($thing);
+            $tree['children'][] = $this->child->allChildrenWhereThisParentAsTree($thing);
         }
 
         return $tree;
@@ -44,18 +44,18 @@ class ThingCategroyService
      * @return array
      * get only the final Category of shown category (things)
      */
-    public function getAllThingsCategories($parentId): array
+    public function allThingsWhereThisParent($parentId): array
     {
         $all = Category::where('is_parent', false)
             ->get();
 
-        $getAllThingsCategories = [];
+        $allThings = [];
         foreach ($all as $single) {
             $all_parents_ids = explode(',', $single->all_parents_ids);
             if (in_array($parentId, $all_parents_ids)) {
-                array_push($getAllThingsCategories, $single);
+                array_push($allThings, $single);
             }
         }
-        return $getAllThingsCategories;
+        return $allThings;
     }
 }
