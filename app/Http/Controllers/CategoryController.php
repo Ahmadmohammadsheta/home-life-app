@@ -7,11 +7,10 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Repository\CategoryRepositoryInterface;
 use App\Http\Resources\Category\CategoryResource;
-use App\Http\Resources\Category\NonParentResource;
-use App\Services\CategroyService;
-use App\Services\childCategroyService;
-use App\Services\ParentCategroyService;
-use App\Services\ThingCategroyService;
+use App\Services\Category\CategroyService;
+use App\Services\Category\ChildCategroyService;
+use App\Services\Category\ParentCategroyService;
+use App\Services\Category\ThingCategroyService;
 
 class CategoryController extends Controller
 {
