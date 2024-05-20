@@ -2,9 +2,10 @@
 
 namespace App\Repository\Eloquent;
 
+use App\Models\Type;
 use App\Models\Project;
-use App\Repository\ProjectRepositoryInterface;
 use App\Http\Traits\SqlDataRetrievable;
+use App\Repository\ProjectRepositoryInterface;
 
 class ProjectRepository extends BaseRepository implements ProjectRepositoryInterface
 {
@@ -40,6 +41,29 @@ class ProjectRepository extends BaseRepository implements ProjectRepositoryInter
      */
     public function columnsTypes(): array
     {
-    return $this->getColumnType(new Project(), ['id', 'created_at', 'updated_at']);
+        $data = [
+            'excepted' => ['id', 'created_at', 'updated_at']
+        ];
+    return $this->getColumnType(new Project(), $data);
     }
+
+    /**
+     * getColumnType
+     * @param id $categoryId
+     * @return array
+     */
+     public function arrayForSelectInput(): array
+     {
+
+         $types = (new TypeRepository(new Type))->all();
+
+         $arrayForSelectInput = [
+             [
+                 'data' => $types,
+                 'to' =>'type_id'
+             ],
+         ];
+         return $arrayForSelectInput;
+         // $error = throw new InvalidArgumentException();
+     }
 }

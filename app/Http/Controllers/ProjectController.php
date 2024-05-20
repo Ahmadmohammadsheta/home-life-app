@@ -12,8 +12,7 @@ class ProjectController extends Controller
     /**
      * Repository constructor method
      */
-    public function __construct(ProjectRepositoryInterface $repository) {
-        $this->repository = $repository;
+    public function __construct(private ProjectRepositoryInterface $repository) {
         $this->additionalData = $this->additionalData(new Project, 'project');
     }
 
@@ -34,8 +33,13 @@ class ProjectController extends Controller
     public function create()
     {
         $columsWithDataTypes = $this->repository->columnsTypes();
+        $arrayForSelectInput = $this->repository->arrayForSelectInput();
 
-        return view('crud.create', ['project' => new Project(), 'columsWithDataTypes'=>$columsWithDataTypes]);
+        return view('crud.create', [
+            'project' => new Project(),
+            'columsWithDataTypes'=>$columsWithDataTypes,
+            'arrayForSelectInput' => $arrayForSelectInput
+        ]);
     }
 
     /**
@@ -43,9 +47,9 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        $this->repository->create($request->all());
+        return redirect()->route($this->additionalData['tableName'].'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
         try {
-            $this->repository->create($request->all());
-            return redirect()->route($this->additionalData['tableName'].'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
         } catch (\Throwable $th) {
             return  redirect()->back()->with(['session' => 'danger', 'message' => 'An error occured']);
         }
@@ -57,7 +61,7 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $columns = $this->repository->columns();
-        
+
         return view('crud.show', [$this->additionalData['modelObjectName'] => new ProjectResource($project), 'columns' => $columns]);
     }
 

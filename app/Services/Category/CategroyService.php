@@ -20,27 +20,31 @@ class CategroyService
     public function __construct(
         private ParentCategroyService $parent,
         private ChildCategroyService $childService,
-        private ThingCategroyService $thingService
+        private ThingCategroyService $thingService,
+        private Category $category
         ) {}
 
    /**
     * columnsAsKeysAndValues
+    * @param Category $category
     * @return array
     */
     public function returnToShowData(Category $category): array
     {
+        // dd($category->with(['type', 'parent'])->find($category->id));
         $data = [
-            'category' => new CategoryResource($category),
+            'category' => new CategoryResource($category->with(['type', 'parent'])->find($category->id)),
             'data' => CategoryResource::collection($this->childService->allChildrenWhereThisParent($category->id)), // get all the children data in the {$data}
             'childrenData' => CategoryResource::collection($category->children), // get this children data only
-            'allRelatedThings' => NonParentResource::collection($this->thingService->allThingsWhereThisParent($category->id)), // get all children data has no parent (all things)
-            'thisRelatedThings' => NonParentResource::collection($category->things) // get this children data has no parent (this things)
+            'allRelatedThings' => CategoryResource::collection($this->thingService->allThingsWhereThisParent($category->id)), // get all children data has no parent (all things)
+            'thisRelatedThings' => CategoryResource::collection($category->things) // get this children data has no parent (this things)
         ];
-        return $data;
+        return ($data);
     }
 
    /**
     * columnsAsKeysAndValues
+    * @param Category $category
     * @return array
     */
     public function returnToFormData(Category $category = null): array
@@ -61,13 +65,18 @@ class CategroyService
     */
     public function columns(): array
     {
+        $data = [
+            'custom' => ['id', 'name', 'image', 'parentName', 'is_parent', 'typeName'],
+            'columnsAsKeys' => ['id', 'name', 'Image', 'Parent', 'Is parent', 'Type'],
+            'excepted' => ['all_parents_ids'],
+        ];
         if (route('categories.index')) {
-            $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at', 'all_parents_ids'], ['parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+            $columns = $this->columnsAsKeysAndValues(new Category(), $data);
         } else {
-            $columns = $this->columnsAsKeysAndValues(new Category(), ['updated_at'], ['all_parents_ids' => 'PARENTS', 'parent_id' => 'PARENT NAME', 'category_id' => 'CATEGORY NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+            $columns = $this->columnsAsKeysAndValues(new Category(), $data);
         }
 
-        return $columns;
+        return ($columns);
     }
 
    /**
@@ -76,11 +85,15 @@ class CategroyService
     */
     public function columnsTypes(): array
     {
-        return $this->getColumnType(new Category(), ['id', 'created_at', 'updated_at', 'all_parents_ids']);
+        $data = [
+            'excepted' => ['id', 'created_at', 'updated_at', 'all_parents_ids']
+        ];
+        return $this->getColumnType(new Category(), $data);
     }
 
    /**
     * getColumnType
+    * @param id $categoryId
     * @return array
     */
     public function arrayForSelectInput($categoryId = null): array
@@ -88,7 +101,7 @@ class CategroyService
 
         $types = (new TypeRepository(new Type))->all();
 
-        $categories = isset($categoryId) ? $this->parent->parentsWhereNotThis($categoryId) : Category::all();
+        $categories = isset($categoryId) ? $this->parent->parentsWhereNotThis($categoryId) : $this->category->all();
         $arrayForSelectInput = [
             [
                 'data' => $categories,
@@ -138,7 +151,7 @@ class CategroyService
     }
     // public function store(array $userData): Category
     // {
-        // $question = Category::find($userData['id']);
+        // $question = $this->category->find($userData['id']);
         // abort_if(
         //     $question->user_id == auth()->id(),
         //     500,

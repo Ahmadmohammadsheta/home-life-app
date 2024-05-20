@@ -3,38 +3,36 @@
 namespace App\Services\Category;
 
 use App\Models\Category;
-use Illuminate\Support\Facades\Route;
 use App\Repository\CategoryRepositoryInterface;
 
 class ChildCategroyService
 {
     /**
-     * Repository constructor method
+     * Child Services constructor method
      */
-    public function __construct(private CategoryRepositoryInterface $repository) {}
+    public function __construct(
+        private CategoryRepositoryInterface $repository,
+        private Category $category) {}
 
     /**
+    * @param id $parentId
      * @return array
      * get all the children Category of shown category ass an array
      */
     public function allChildrenWhereThisParent($parentId): array
     {
-        $currentId = $parentId;
+        $thisChildren = [];
 
-        $children = [];
-        $currentChildren = Category::where('parent_id', $currentId)->get();
-
-        foreach ($currentChildren as $child) {
-            if ($child->is_parent == true) {
-                $children[] = $child;
-                $children = array_merge($children, $this->allChildrenWhereThisParent($child->id));
-            }
+        $members = $this->repository->thisMembers($parentId);
+        foreach ($members as $member) {
+            $member->is_parent == 'True' ? array_push($thisChildren, $member) : '';
         }
 
-        return $children;
+        return ($thisChildren);
     }
 
     /**
+    * @param id $parentId
      * @return array
      * get all the children Category of shown category ass an array
      */
@@ -54,6 +52,7 @@ class ChildCategroyService
     }
 
     /**
+     * @param Category $category
      * @return array
      * get all the children Category of shown category as a tree
      */
@@ -66,12 +65,9 @@ class ChildCategroyService
         ];
 
         foreach ($category->children as $child) {
-            if (Route::currentRouteName() === 'categories.update') {
-                $array = [];
-                $array['all_parents_ids'] = implode(',', [$this->repository->find($child['parent_id'])->all_parents_ids, $this->repository->find($child['parent_id'])->id]);
-                $child->update($array);
-            }
+
             $tree['children'][] = $this->allChildrenWhereThisParentAsTree($child);
+
         }
 
         return $tree;

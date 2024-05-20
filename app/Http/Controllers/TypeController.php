@@ -11,7 +11,7 @@ class TypeController extends Controller
     /**
      * Repository constructor method
      */
-    public function __construct(TypeRepositoryInterface $repository) {
+    public function __construct(private TypeRepositoryInterface $repository) {
         $this->repository = $repository;
         $this->additionalData = $this->additionalData(new Type, 'type');
     }

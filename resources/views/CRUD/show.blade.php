@@ -42,7 +42,7 @@
                         <div class="card border-0">
                             <div class="card-body py-4">
                                 @foreach ($columnsAsValues as $columnsAsValue)
-                                @if ($columnsAsValue !== "image" && $columnsAsValue !== "parent_id")
+                                @if (!in_array($columnsAsValue, ["image", "parentName"]))
                                 <div class="mb-0">
                                     <span class="badge text-success me-2">{{ "The $columnsAsValue" }}</span>
                                     <span class="fw-bold">{{ (($$modelObjectName[$columnsAsValue])) }}</span>
@@ -50,7 +50,7 @@
 
                                 @endif
 
-                                @if ($columnsAsValue == "parent_id")
+                                @if ($columnsAsValue == "parentName")
                                 <a href="{{ url($tableName."/".$$modelObjectName['parent_id']) }}">
                                     <div class="mb-0">
                                         <span class="badge text-success me-2">{{ "The $columnsAsValue" }}</span>

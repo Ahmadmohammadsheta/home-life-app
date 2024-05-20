@@ -15,4 +15,11 @@ interface ProjectRepositoryInterface
     * @return array
     */
     public function columnsTypes(): array;
+    
+    /**
+     * getColumnType
+     * @param id $categoryId
+     * @return array
+     */
+     public function arrayForSelectInput(): array;
 }

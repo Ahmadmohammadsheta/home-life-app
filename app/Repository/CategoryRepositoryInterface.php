@@ -1,4 +1,12 @@
 <?php
 namespace App\Repository;
 
-interface CategoryRepositoryInterface {}
+interface CategoryRepositoryInterface {
+
+    /**
+     * @param id $parentId
+     *
+     * @return array
+     */
+    public function thisMembers($parentId): array;
+}

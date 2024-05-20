@@ -13,7 +13,14 @@ class Project extends Model
 
     protected $fillable = ['name', 'type_id', 'user_id'];
 
+    protected $attributes;
 
+    public function __construct(array $attributes = array())
+    {
+        $this->setRawAttributes(array(
+        'user_id' => auth()->id()), true);
+        parent::__construct($attributes);
+    }
 
     /**
      * The attributes that make product relationship
@@ -37,35 +44,23 @@ class Project extends Model
     *
     * @return Attribute
     */
-    // protected function typeId(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn ($value) => Type::find($value)->name,
-    //     );
-    // }
-
-    /**
-    * Get User Attribute.
-    *
-    * @return Attribute
-    */
-    // protected function userId(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn ($value) => User::find($value)->name,
-    //     );
-    // }
-
-    /**
-    * Created by Attribute.
-    *
-    * @return Attribute
-    */
-    protected function createdBy(): Attribute
+    protected function typeId(): Attribute
     {
         return Attribute::make(
+            get: fn ($value) => Type::find($value)->name,
+        );
+    }
+
+    /**
+    * User Id Attribute.
+    *
+    * @return Attribute
+    */
+    protected function userId(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => $value = auth()->id(),
             get: fn ($value) => User::find($value)->name,
-            set: fn ($value) => auth()->id(),
         );
     }
 

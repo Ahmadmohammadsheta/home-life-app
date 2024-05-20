@@ -3,9 +3,9 @@
 namespace App\Repository\Eloquent;
 
 use App\Models\Category;
+use App\Http\Traits\SqlDataRetrievable;
 use Illuminate\Database\Eloquent\Model;
 use App\Repository\CategoryRepositoryInterface;
-use App\Http\Traits\SqlDataRetrievable;
 
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
@@ -23,7 +23,6 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
    /**
     * @param array $attributes
-    *
     * @return Model
     */
     public function create(array $attributes): Model
@@ -48,6 +47,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     public function edit($id, array $attributes)
     {
         $data = $this->model->findOrFail($id);
+        $thisMembers = $this->thisMembers($id);
 
         if (array_key_exists('image', $attributes)) {
             $this->deleteImage($data['image']); // Working only if file exists
@@ -55,18 +55,26 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
         if (isset($attributes['parent_id'])) {
             $parent = $this->find($attributes['parent_id']);
-            $attributes['all_parents_ids'] = implode(',', [$parent->all_parents_ids, $parent->id]);
+            $attributes['all_parents_ids'] = $parent->all_parents_ids != null ? implode(',', [$parent->all_parents_ids, $attributes['parent_id']]) : $attributes['parent_id'];
         }
 
         isset($attributes['is_parent']) ?: $attributes['is_parent'] = false;
 
         $data->update($attributes);
 
+        if ($thisMembers != null) {
+            foreach ($thisMembers as $thisMember) {
+                $all_parents_ids = implode(',', [$data->all_parents_ids, $id]);
+                $thisMember->update(['all_parents_ids' => $all_parents_ids]);
+            }
+        }
+
         return $data;
     }
 
    /**
     * Delete a model row
+     * @return Model
     */
     public function delete($id): ?Model
     {
@@ -76,5 +84,24 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
         $data->delete();
         return $data;
+    }
+
+    /**
+     * @param id $parentId
+     *
+     * @return array
+     */
+    public function thisMembers($parentId): array
+    {
+        $thisMembers = [];
+
+        $allChildrenAndThings = $this->model->with(['parent', 'type'])->get();
+        foreach ($allChildrenAndThings as $childOrThing) {
+            $allParentsIds = explode(',', $childOrThing->all_parents_ids);
+            if (in_array($parentId, $allParentsIds)) {
+                array_push($thisMembers, $childOrThing);
+            }
+        }
+        return $thisMembers;
     }
 }

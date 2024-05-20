@@ -25,20 +25,20 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', true);
+        return $this->hasMany(Category::class, 'parent_id')->whereIsParent(true);
     }
 
     public function things(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id')->where('is_parent', false);
+        return $this->hasMany(Category::class, 'parent_id')->whereIsParent(false);
     }
 
     /**
-     * The attributes that make product relationship
+     * The attributes that make type relationship
      */
-    public function type()
+    public function type(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Type::class, 'type_id', 'id');
     }
 
     /**
@@ -78,4 +78,41 @@ class Category extends Model
             get: fn ($value) => $this->getImage($value, 'categories')
         );
     }
+
+    /**
+    * Get Type Name Attribute.
+    *
+    * @return Attribute
+    */
+    protected function typeName(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->type->name,
+        );
+    }
+
+    /**
+    * Get Type Name Attribute.
+    *
+    * @return Attribute
+    */
+    protected function isParent(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value == 1 ? 'True' : 'False',
+        );
+    }
+
+    /**
+    * Get parent Name Attribute.
+    *
+    * @return Attribute
+    */
+    protected function parentName(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->parent_id == null ? 'Non' : $this->parent->name,
+        );
+    }
+
 }

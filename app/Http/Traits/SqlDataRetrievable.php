@@ -9,15 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 Trait SqlDataRetrievable
 {
     /**
-     *
-     */
-    public function modelData($model)
-    {
-        return $model::all();
-    }
-
-    /**
-     *
+     *@return array
      */
     public function mysqlTables()
     {
@@ -36,119 +28,80 @@ Trait SqlDataRetrievable
      * 1- get table name dynamically.
      *
      */
-    public function modelTableName(Model $modelInstance)
+    public function tableName(Model $modelInstance)
     {
         return ($modelInstance)->getTable();
     }
 
     /**
-     * 2- get table columns names dynamically.
+     *  get table columns names dynamically.
      *
      */
     public function tableColumnNames(Model $modelInstance)
     {
-        $tableName = $this->modelTableName($modelInstance);
+        // get the table name by the Model
+        $tableName = $this->tableName($modelInstance);
+
+        // get the table columns names
         return Schema::getColumnListing($tableName);
     }
 
     /**
-     * 3- filter table columns names
+     * filter table columns names
      * if you want to prevent custom columns to show in the blade table file.
-     *
+     * @param Model $modelInstance
+     * @param array $exceptedData
+     * @return array
      */
-    public function filteredTableColumnNames(Model $modelInstance, $exceptedColumns = ['created_at', 'updated_at'])
+    public function filteredColumns(Model $modelInstance, array $exceptedData): array
     {
-        $tableColumnNames = $this->tableColumnNames($modelInstance);
-        return array_diff($tableColumnNames, $exceptedColumns);
-    }
+        // get the table columns names
+        $allColumns = $this->tableColumnNames($modelInstance);
 
-    /**
-     * 4- make the array key have the the columns names.
-     * this to help you if you want to rename the column names in the blade table file.
-     *
-     */
-    public function columnKeysNamesEqualColumnNames(Model $modelInstance, $exceptedColumns = ['created_at', 'updated_at'])
-    {
-        $keyAndValues = $this->filteredTableColumnNames($modelInstance, $exceptedColumns);
-        return array_combine($keyAndValues, $keyAndValues); // Make the keys names have the same values names
-    }
+        // merge the excepted colums with the default
+        $exceptedColumns = array_merge($exceptedData, ['created_at', 'updated_at']);
 
+        // filter the array by show the columns without the all excepted
+        return array_diff($allColumns, $exceptedColumns);
+    }
 
     /**
      * get table columns names
-     *
+     * @param Model $modelInstance
+     * @param array $data
+     * @return array
      */
-    public function theWholeMethod(Model $modelInstance, $exceptedColumns = ['created_at', 'updated_at'])
+    public function columnsAsKeysAndValues(Model $modelInstance, array $data): array
     {
-        $tableName = ($modelInstance)->getTable();
-        $allColumns = Schema::getColumnListing($tableName);
-        $filteredColumns = array_diff($allColumns, $exceptedColumns);
-        return array_combine($filteredColumns, $allColumns); // Make the keys names have the same values names
+        // filter the array by show the columns without the all excepted
+        $filteredColumns = $this->filteredColumns($modelInstance, $data['excepted']);
+
+        // rename the columns by using the original columns array by a new array has a new names but the same columns count
+        $columnsAsKeys = array_combine($filteredColumns, $data['columnsAsKeys']);
+
+        $columnsAsValues = array_combine($filteredColumns, $data['custom']);
+
+        return [
+            'columnsAsKeys' => $columnsAsKeys,
+            'columnsAsValues' => $columnsAsValues
+        ];
     }
 
     /**
+     * @param Model $modelInstance
+     * @param array $data
+     * @return array
      * get the column type
      */
-    public function getColumnType(Model $modelInstance, $exceptedColumns = ['created_at', 'updated_at'])
+    public function getColumnType(Model $modelInstance, array $data): array
     {
-        $columnNames = $this->filteredTableColumnNames($modelInstance, $exceptedColumns);
+        // filter the array by show the columns without the all excepted
+        $filteredColumns = $this->filteredColumns($modelInstance, $data['excepted']);
 
-        foreach ($columnNames as $columnName) {
-            $columnDataType = Schema::getColumnType($this->modelTableName($modelInstance), $columnName);
-            $columsWithDataTypes[] = (["name" => $columnName, "type" => $columnDataType]);
+        foreach ($filteredColumns as $filteredColumn) {
+            $columnDataType = Schema::getColumnType($this->tableName($modelInstance), $filteredColumn);
+            $columsWithDataTypes[] = (["name" => $filteredColumn, "type" => $columnDataType]);
         }
-        return $columsWithDataTypes;
+        return ($columsWithDataTypes);
     }
-
-
-
-    // -----------------------------------------------------------------Another structure---------------------
-    // -----------------------------------------------------------------Another structure---------------------
-    // -----------------------------------------------------------------Another structure---------------------
-
-    /**
-     * 3- filter table columns names
-     * if you want to prevent custom columns to show in the blade table file.
-     *
-     */
-    public function filteredTableColumnNames2(Model $modelInstance, $exceptedColumns = ['created_at', 'updated_at'])
-    {
-        $tableName = ($modelInstance)->getTable();
-        $all_columns = Schema::getColumnListing($tableName);
-        return array_diff($all_columns, $exceptedColumns);
-    }
-
-    /**
-     * 4- make the array key have the the columns names.
-     * this to help you if you want to rename the column names in the blade table file.
-     *
-     */
-    public function columnKeysNamesEqualColumnNames2(Model $modelInstance, $exceptedColumns = ['created_at', 'updated_at'])
-    {
-        return array_combine($this->filteredTableColumnNames($modelInstance, $exceptedColumns), $this->filteredTableColumnNames($modelInstance, $exceptedColumns)); // Make the keys names have the same values names
-    }
-
-
-
-
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function columnsAsKeysAndValues(Model $modelInstance, array $exceptedColumns = ['updated_at'], array $renameColumns = ['created_at' => 'CREATED AT'])
-    {
-        $columnsAsValues = $this->filteredTableColumnNames($modelInstance, $exceptedColumns);
-        $columnsAsKeys = $this->columnKeysNamesEqualColumnNames($modelInstance, $exceptedColumns);
-        foreach ($columnsAsKeys as $columnsAsKey) {
-            foreach ($renameColumns as $key =>$value) {
-                if ($columnsAsKey == $key) {
-                    $columnsAsKeys[$key] = $value;
-                }
-            }
-        }
-
-        return ['columnsAsKeys' => $columnsAsKeys, 'columnsAsValues' => $columnsAsValues];
-
-    }
-
 }

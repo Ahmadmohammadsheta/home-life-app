@@ -42,11 +42,11 @@ $(document).ready(function() {
     var categoryId = $('input[name="id"]').val();
     if (categoryId) {
         $.ajax({
-            url: "{{ URL::to('categories/') }}/" + categoryId,
+            url: "{{ URL::to('categories') }}/" + categoryId,
             type: "GET",
             dataType: "json",
             success: function(data) {
-                // alert(data.category);
+                // alert(categoryId);
                 $('select[name="parent_id"]').empty();
 
                 $('select[name="parent_id"]').append('<option value="' +
@@ -82,7 +82,7 @@ $(document).ready(function() {
                     // $.each(data, function(index, value) {
                         // alert(data.data.id);
                         $('select[name="type_id"]').append('<option value="' +
-                        data.type.id + '">' + data.type.name + '</option>');
+                        data.category.type.id + '">' + data.category.type.name + '</option>');
                     // });
                 },
             });

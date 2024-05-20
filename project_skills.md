@@ -85,6 +85,13 @@ packages: [
 
 Models: [
     - [EmailVerification, resetPassword]: User implements MustVerifyEmail
+    - public function __construct(array $attributes = array())
+        {
+            $this->setRawAttributes(array(
+            'user_id' => auth()->id()), true);
+            parent::__construct($attributes);
+        }
+    
 ]
 
 Digging Deeper: [

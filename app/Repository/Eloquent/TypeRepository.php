@@ -33,4 +33,16 @@ class TypeRepository extends BaseRepository implements TypeRepositoryInterface
 
         return $columns;
     }
+
+    /**
+     * getColumnType
+     * @return array
+     */
+     public function columnsTypes(): array
+     {
+        $data = [
+            'excepted' => ['id', 'created_at', 'updated_at']
+        ];
+         return $this->getColumnType(new Type(), $data);
+     }
 }

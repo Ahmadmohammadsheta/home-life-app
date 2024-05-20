@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Repository\CategoryRepositoryInterface;
 use App\Http\Resources\Category\CategoryResource;
 use App\Services\Category\CategroyService;
@@ -15,28 +14,15 @@ use App\Services\Category\ThingCategroyService;
 class CategoryController extends Controller
 {
     /**
-     * AMA custom
-     * Properties
-     */
-    public $parentService;
-    public $childService;
-    public $thingService;
-
-    /**
      * Repository constructor method
      */
     public function __construct(
-        CategoryRepositoryInterface $repository,
-        CategroyService $service,
-        ParentCategroyService $parentService,
-        ChildCategroyService $childService,
-        ThingCategroyService $thingService,
+        private CategoryRepositoryInterface $repository,
+        private CategroyService $service,
+        private ParentCategroyService $parentService,
+        private ChildCategroyService $childService,
+        private ThingCategroyService $thingService,
         ) {
-            $this->repository = $repository;
-            $this->service = $service;
-            $this->parentService = $parentService;
-            $this->childService = $childService;
-            $this->thingService = $thingService;
             $this->additionalData = $this->additionalData(new Category, 'category');
             $this->uriRoute = $this->additionalData['tableName'];
         }
@@ -46,8 +32,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('crud.index',
-        ['data' => CategoryResource::collection($this->parentService->allParents())],
+        $data = CategoryResource::collection($this->repository->all());
+        return request()->wantsJson() ? response()->json($data) :
+        view('crud.index',
+        ['data' => $data],
         ['columns' => $this->service->columns()]);
     }
 
@@ -80,9 +68,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-
         $data = $this->service->returnToShowData($category);
-
+        // dd($data);
+        // return response()->json($data['category']);
         return request()->wantsJson() ?
         response()->json($data) :
         view('crud.show', $data, ['columns' => $this->service->columns()]);
@@ -117,11 +105,11 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Category $category)
+    public function destroy(Category $category)
     {
         $this->repository->delete($category->id);
 
-        return $request->wantsJson() ?
+        return request()->wantsJson() ?
         response()->json("تم الحذف بنجاح", 200) :
         redirect()->route($this->uriRoute.'.index')->with('success', 'تم الحذف بنجاح');
     }
