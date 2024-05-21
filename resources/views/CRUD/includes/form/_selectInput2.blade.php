@@ -7,8 +7,9 @@
             @foreach ($selectItem['data'] as $value)
 
             <option class=" @error($column['name']) is-invalid @enderror" value="{{ $value->id }}"
-                {{ $value->id != $$modelObjectName->$modelObjectNameValue ?: 'selected' }}
-                >{{ $value->name }}</option>
+                @selected(old($column['name'], $$modelObjectName->$modelObjectNameValue) == $value->id)
+                >{{ $value->name }}
+            </option>
 
             @endforeach
     </select>

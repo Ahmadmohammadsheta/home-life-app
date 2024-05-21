@@ -19,8 +19,9 @@ PHP: [
         default:
             $return = redirect()->route($this->uriRoute.'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
     }
-
     return $return;
+    - (this value not found ?? will return the side value (and (??) meaning (? null :))) 
+    - (this value not found ?: will return the side value (and (?:) meaning (? true :))) 
 ]
 
 setup: [
@@ -120,6 +121,9 @@ Blade: [
     - @includeIf("$tableName.show", ['page' => 'name'])
     - @yeild("name", ['page' => 'name'])
     - @section('page-header', {{ __(ucfirst($tableName)) }})
+    - @checked($$modelObjectName->$modelObjectNameValue == false)
+    - @selected($value->id == $$modelObjectName->$modelObjectNameValue)
+    - old($column['name'], defaultValue)
 ]
 
 Request: [
@@ -129,3 +133,7 @@ Request: [
 Unit Test [
     - Category CRUD tests are success;
 ]
+
+        // $slug = request()->merge([
+        //     'slug' => Str::slug(request()->name)
+        // ]);

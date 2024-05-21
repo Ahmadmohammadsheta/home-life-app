@@ -31,54 +31,71 @@ class ParentCategroyService
     */
     public function allParentsForThisSon(Category $category): array
     {
+        $thisParents = [];
+
+        $parentsIds = explode(',', $category->all_parents_ids);
+
+        $parents = $this->category->whereIn('id', $parentsIds)->get();
+
+        foreach ($parents as $thisParent) {
+            $thisParents[] = $thisParent;
+            $parentsIds = explode(',', $thisParent->all_parents_ids);
+            $parents = $this->category->whereIn('id', $parentsIds)->get();
+        }
+
+        return ($thisParents);
+    }
+
+   /**
+    * @param Category $category
+    * @return array
+    * Recursive the data
+    */
+    public function allParentsForThisSonAsTree(Category $category): array
+    {
         $tree = [
             'id' => $category->id,
-            'parents' => [],
+            'parent' => [],
         ];
 
-        // if ($category->all_parents_ids > 0) {
-        //     $parentsIds = explode(',', $category->all_parents_ids);
-        //     $thisParents = $this->category->whereIn('id', $parentsIds)->get();
-        //     foreach ($thisParents as $parent) {
-        //         $tree['parents'][] = $this->allParentsForThisSon($parent);
-        //     }
-        // }
+        $parentsIds = explode(',', $category->all_parents_ids);
 
-        // $tree = [
-        //     'id' => $category->id,
-        //     'parents' => [],
-        // ];
-        // if ($category->all_parents_ids > 0) {
-        //     $parentsIds = explode(',', $category->all_parents_ids);
-        //     $thisParents = $this->category->whereIn('id', $parentsIds)->get();
-        //     foreach ($thisParents as $parent) {
-        //         $tree['parents'][] = $this->allParentsForThisSon($parent);
-        //         dd($tree, 1);
-        //     }
-        // }
-        // dd($tree, 2);
+        $thisParents = $this->category->whereIn('id', $parentsIds)->get();
 
+        if ($category->all_parents_ids > 0) {
+            foreach ($thisParents as $parent) {
 
+                $tree['parent'][] = $this->allParentsForThisSon($parent);
 
-        // $currentId = $category->id;
-        // // gst in array
-        // $parent = $this->category->where('id', $currentId)->first();
-        // if ($parent) {
-        //     $parent->parent = $this->allParentsForThisSon($category);
-        // }
+            }
+        }
 
-        // // get  recuiters
-        // $parents = [];
-        // while ($currentId) {
-        //     $parent = $this->category->where('id', $currentId)->first();
-        //     if ($parent) {
-        //         $parents[] = $parent->name;
-        //         $currentId = $parent->parent_id;
-        //     } else {
-        //         $currentId = null; // No parent found, break the loop
-        //     }
-        // }
         return ($tree);
+    }
+
+
+
+
+    function iterateTree(Category $category)
+    {
+        $tree = $this->allParentsForThisSon($category);
+        $new = [];
+        // dd($tree);
+        foreach ($tree['parent'] as $branch) {
+            $new[] = $branch['parent'];
+            if (isset($branch['1'])) {
+            }
+        };
+        // foreach ($tree as $branch) {
+        //     // Access node attributes (assuming 'name' and 'children')
+
+        //     if (isset($branch['parent'])) {
+        //         $new[] = $branch['parent'];
+        //         $this->iterateTree($branch['parent'], $level + 1);
+        //     }
+        // }
+
+        return dd($new);
     }
 
    /**

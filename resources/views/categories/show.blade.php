@@ -52,5 +52,14 @@
     </div>
     @endsection
 
+
+
+    @section('title')
+    @foreach ($allParentsForThisSon as $item)
+    <span class="m-1" style="font-size: 12px">
+        <span style="color: rgb(17, 218, 17)">Parent-></span><a href="{{ url($tableName."/".$item->id) }}">{{ $item->name }}</a>
+    </span>Next
+    @endforeach
+    @endsection
 @endif
 

@@ -7,7 +7,6 @@ use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use App\Repository\Eloquent\TypeRepository;
 use App\Http\Resources\Category\CategoryResource;
-use App\Http\Resources\Category\NonParentResource;
 use App\Http\Traits\SqlDataRetrievable; // AMA custom trait
 
 class CategroyService
@@ -18,7 +17,7 @@ class CategroyService
      * Repository constructor method
      */
     public function __construct(
-        private ParentCategroyService $parent,
+        private ParentCategroyService $parentService,
         private ChildCategroyService $childService,
         private ThingCategroyService $thingService,
         private Category $category
@@ -31,13 +30,13 @@ class CategroyService
     */
     public function returnToShowData(Category $category): array
     {
-        // dd($category->with(['type', 'parent'])->find($category->id));
         $data = [
             'category' => new CategoryResource($category->with(['type', 'parent'])->find($category->id)),
             'data' => CategoryResource::collection($this->childService->allChildrenWhereThisParent($category->id)), // get all the children data in the {$data}
             'childrenData' => CategoryResource::collection($category->children), // get this children data only
             'allRelatedThings' => CategoryResource::collection($this->thingService->allThingsWhereThisParent($category->id)), // get all children data has no parent (all things)
-            'thisRelatedThings' => CategoryResource::collection($category->things) // get this children data has no parent (this things)
+            'thisRelatedThings' => CategoryResource::collection($category->things), // get this children data has no parent (this things)
+            'allParentsForThisSon' => $this->parentService->allParentsForThisSon($category) // get this children data has no parent (this things)
         ];
         return ($data);
     }
@@ -101,7 +100,7 @@ class CategroyService
 
         $types = (new TypeRepository(new Type))->all();
 
-        $categories = isset($categoryId) ? $this->parent->parentsWhereNotThis($categoryId) : $this->category->all();
+        $categories = isset($categoryId) ? $this->parentService->parentsWhereNotThis($categoryId) : $this->category->all();
         $arrayForSelectInput = [
             [
                 'data' => $categories,

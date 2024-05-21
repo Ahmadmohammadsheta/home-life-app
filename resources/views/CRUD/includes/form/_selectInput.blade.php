@@ -9,15 +9,17 @@
                         })->whereNotIn('id', $allChildren)->get() as $value)
 
             <option class=" @error($column['name']) is-invalid @enderror" value="{{ $value->id }}"
-                {{ $value->id != $$modelObjectName->$modelObjectNameValue ?: 'selected' }}
-                >{{ $value->name }}</option>
+                @selected(old($column['name'], $$modelObjectName->$modelObjectNameValue) == $value->id)
+                >{{ $value->name }}
+            </option>
             @endforeach
         @else
             @foreach (("App\Models\\".ucfirst(substr($column['name'], 0, -3)))::all() as $value)
 
             <option class=" @error($column['name']) is-invalid @enderror" value="{{ $value->id }}"
                 {{ $value->id != $$modelObjectName->$modelObjectNameValue ?: 'selected' }}
-                >{{ $value->name }}</option>
+                >{{ $value->name }}
+            </option>
             @endforeach
         @endif
     </select>

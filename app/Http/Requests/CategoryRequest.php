@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryRequest extends FormRequest
@@ -15,12 +16,22 @@ class CategoryRequest extends FormRequest
             'id' => [
                 'nullable', 'exists:categories,id'
             ],
-            'name' => ['required', 'string', 'min:3', 'max:255'], //AMA>true
+            'name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                Rule::unique('categories', 'name')
+            ], //AMA>true
             'parent_id' =>[
-                'nullable', 'int', 'exists:categories,id'
+                'nullable',
+                'int',
+                'exists:categories,id'
             ],
             'image' => [
-                'nullable', 'max:1048576', 'dimensions:min_width=100,min_height=100'
+                'nullable',
+                'max:1048576',
+                'dimensions:min_width=100,min_height=100'
             ],
             'all_parents_ids' => [
                 'nullable'
@@ -29,7 +40,9 @@ class CategoryRequest extends FormRequest
                 'int', 'in:0,1'
             ],
             'type_id' => [
-                'required', 'int', 'exists:types,id'
+                'required',
+                'int',
+                'exists:types,id'
             ]
         ];
     }
@@ -39,13 +52,25 @@ class CategoryRequest extends FormRequest
      */
     private function updateRequest()
     {
+        $id = (request()->route()->parameters['category']['id']);
         return [
-            'name' => ['required', 'string', 'min:3', 'max:255'], //AMA>true
+            'name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                // "unique:categories,name,$this->id",
+                Rule::unique('categories', 'name')->ignore($id)
+            ], //AMA>true
             'parent_id' =>[
-                'nullable', 'int', 'exists:categories,id'
+                'nullable',
+                'int',
+                'exists:categories,id'
             ],
             'image' => [
-                'nullable', 'max:1048576', 'dimensions:min_width=100,min_height=100'
+                'nullable',
+                'max:1048576',
+                'dimensions:min_width=100,min_height=100'
             ],
             'all_parents_ids' => [
                 'nullable'
@@ -54,9 +79,11 @@ class CategoryRequest extends FormRequest
                 'int', 'in:0,1'
             ],
             'type_id' => [
-                'required', 'int', 'exists:types,id'
+                'required',
+                'int',
+                'exists:types,id'
             ],
-            // 'name' => 'required| unique:customers,name,'.$this->id,  //AMA.true
+            // 'name' => "required| unique:customers,name,$this->id",  //AMA.true
             // 'name' => ['required', Rule::unique('customers', 'name')->ignore($this->id)], //AMA>true
         ];
     }
@@ -87,8 +114,9 @@ class CategoryRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'يجب ادخال اسم',
-            'name.min' => 'الاسم لا يقل عن 3 احرف'
+            'unique' => 'The value of (:attribute) is Unique',
+            'name.required' => 'The field (:attribute) is required',
+            'name.min' => 'The field (:attribute) must be more than 3 charachters'
         ];
     }
 }

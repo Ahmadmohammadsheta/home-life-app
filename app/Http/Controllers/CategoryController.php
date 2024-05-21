@@ -69,8 +69,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $data = $this->service->returnToShowData($category);
-        // dd($data);
-        // return response()->json($data['category']);
+
         return request()->wantsJson() ?
         response()->json($data) :
         view('crud.show', $data, ['columns' => $this->service->columns()]);
