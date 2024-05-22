@@ -1,8 +1,8 @@
 
 
-@error($column['name'])
+@error($cloumnName)
 <span class="text-danger" role="alert">
-    @foreach ($errors->get($column['name']) as $error)
+    @foreach ($errors->get($cloumnName) as $error)
     <strong>{{ $error }}</strong>
     @endforeach
 </span>
@@ -16,10 +16,10 @@
 
 
 
-{{-- @error($column['name'])
+{{-- @error($cloumnName)
 <span class="invalid-feedback" role="alert">    {
     <strong>{{ $message }}</strong>
-    @foreach ($errors->get($column['name']) as $error)
+    @foreach ($errors->get($cloumnName) as $error)
     <strong>{{ $error }}</strong>
     @endforeach
 </span>

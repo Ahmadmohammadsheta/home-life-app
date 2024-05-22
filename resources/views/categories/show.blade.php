@@ -54,12 +54,13 @@
 
 
 
-    @section('title')
-    @foreach ($allParentsForThisSon as $item)
+    @endif
+
+@section('title')
+    @foreach ($allParentsForThisSon as $parent)
     <span class="m-1" style="font-size: 12px">
-        <span style="color: rgb(17, 218, 17)">Parent-></span><a href="{{ url($tableName."/".$item->id) }}">{{ $item->name }}</a>
+        <span style="color: rgb(17, 218, 17)">Parent-></span><a href="{{ url($tableName."/".$parent->id) }}">{{ $parent->name }}</a>
     </span>Next
     @endforeach
-    @endsection
-@endif
+@endsection
 

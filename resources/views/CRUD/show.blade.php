@@ -44,8 +44,8 @@
                                 @foreach ($columnsAsValues as $columnsAsValue)
                                 @if (!in_array($columnsAsValue, ["image", "parentName"]))
                                 <div class="mb-0">
-                                    <span class="badge text-success me-2">{{ "The $columnsAsValue" }}</span>
-                                    <span class="fw-bold">{{ (($$modelObjectName[$columnsAsValue])) }}</span>
+                                    <span class="badge text_success me-2">{{ "The $columnsAsValue" }}</span>
+                                    <span class="fw-bold">{{ ( $$modelObjectName[$columnsAsValue] === true ? 'True' : ($$modelObjectName[$columnsAsValue] === false ? 'False' : $$modelObjectName[$columnsAsValue]) ) }}</span>
                                 </div>
 
                                 @endif
@@ -53,7 +53,7 @@
                                 @if ($columnsAsValue == "parentName")
                                 <a href="{{ url($tableName."/".$$modelObjectName['parent_id']) }}">
                                     <div class="mb-0">
-                                        <span class="badge text-success me-2">{{ "The $columnsAsValue" }}</span>
+                                        <span class="badge text_success me-2">{{ "The $columnsAsValue" }}</span>
                                         <span class="fw-bold">{{ (($$modelObjectName[$columnsAsValue])) }}</span>
                                     </div>
                                 </a>

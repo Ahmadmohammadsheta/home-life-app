@@ -3,31 +3,31 @@
 @foreach ($columsWithDataTypes as $column)
 
     @php
-        $modelObjectNameValue = $column['name'];
+        $cloumnName = $column['name'];
     @endphp
 
-    <label style="text-align: center important; display: inline-block" class="text-primary">{{ __(ucfirst($column['name'])) }}</label>
+        <x-form.label :id="$cloumnName">{{ Str::ucfirst($cloumnName) }}</x-form.label>
 
     @if ($column['type'] == "bigint") <!-- for relation model -->
 
-        @include('crud.includes.form._selectInput2')
+        <x-form.select :arrayForSelectInput="$arrayForSelectInput" :name="$cloumnName" :selected="old($cloumnName, $$modelObjectName->$cloumnName)" />
 
-    @elseif ($column['type'] == "varchar" && $column['name'] !== "image") <!-- the normal inputs -->
+    @elseif ($column['type'] == "varchar" && $cloumnName !== "image") <!-- the normal inputs -->
 
-        @include('crud.includes.form._stringInput')
+        <x-form.input class="p-1" type="text" :name="$cloumnName" :value="old($cloumnName, $$modelObjectName->$cloumnName)" required='required' />
 
-    @elseif ($column['name'] == "image")
+    @elseif ($cloumnName == "image")
 
-        @include('crud.includes.form._imgInput')
+    <x-form.input type="file" :name="$cloumnName" :object="$$modelObjectName" :value="old($cloumnName, $$modelObjectName->$cloumnName)" accept="image/*" />
 
-    @elseIf ($column['name'] == "is_parent") <!-- radio input -->
+    @elseIf ($cloumnName == "is_parent") <!-- radio input -->
 
-        @include('crud.includes.form._radioInput')
+    <x-form.radio :name="$cloumnName" :checked="$$modelObjectName->$cloumnName" :options="['1' => 'True']" />
 
     @endif
 
 @endforeach
 
 <div class="d-flex justify-content-center">
-    <button type="submit" class="btn btn-success d-block w-100">{{ $action }}</button>
+    <button type="submit" class="btn btn-primary d-block w-100">{{ $action }}</button>
 </div>

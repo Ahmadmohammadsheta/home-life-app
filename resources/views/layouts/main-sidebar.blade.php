@@ -9,10 +9,10 @@
     </div>
 </div>
 <ul class="sidebar-nav">
-    @foreach (mysqlTables() as $item)
+    @foreach (mysqlTables() as $key => $value)
 
     <li class="sidebar-item">
-        <a href="{{ url('/' . $page=strtolower($item)) }}" class="sidebar-link"><i class="lni lni-agenda"></i><span>{{ __($item) }}</span></a>
+        <a href="{{ url('/' . $page=strtolower($key)) }}" class="sidebar-link"><i class="lni lni-{{ $value }}"></i><span>{{ __($key) }}</span></a>
     </li>
 
     @endforeach
@@ -35,7 +35,7 @@
         </ul>
     </li>
     <li class="sidebar-item">
-        <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#multi" aria-expanded="false" aria-controls="multi"><i class="lni lni-layout"></i><span>Multi Level</span></a>
+        <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#multi" aria-expanded="false" aria-controls="multi"><i class="lni lni-agenda"></i><span>Multi Level</span></a>
         <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
             <li class="sidebar-item">
                 <a href="" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">Two Links</a>

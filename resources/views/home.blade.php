@@ -7,7 +7,7 @@
 					<div class="my-auto">
 						<div class="d-flex">
 							<h3 class="fw-bold fs-4 mb-0">{{ __("Pages:/ ") }}</h3>
-                            <h3 class="fw-bold fs-4 mb-0 text-success">{{ __("Admin Dashboard") }}</h3>
+                            <h3 class="fw-bold fs-4 mb-0 text_success">{{ __("Admin Dashboard") }}</h3>
 						</div>
 					</div>
 					<div class="d-flex my-xl-auto right-content">
@@ -32,7 +32,7 @@
                     <h5 class="mb-2 fw-bold">Member Progress</h5>
                     <p class="mb-2 fw-bold">paragraph</p>
                     <div class="mb-0">
-                        <span class="badge text-success me-2">span</span>
+                        <span class="badge text_success me-2">span</span>
                         <span class="fw-bold">Bold span</span>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                     <h5 class="mb-2 fw-bold">Member Progress</h5>
                     <p class="mb-2 fw-bold">paragraph</p>
                     <div class="mb-0">
-                        <span class="badge text-success me-2">span</span>
+                        <span class="badge text_success me-2">span</span>
                         <span class="fw-bold">Bold span</span>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     <h5 class="mb-2 fw-bold">Member Progress</h5>
                     <p class="mb-2 fw-bold">paragraph</p>
                     <div class="mb-0">
-                        <span class="badge text-success me-2">span</span>
+                        <span class="badge text_success me-2">span</span>
                         <span class="fw-bold">Bold span</span>
                     </div>
                 </div>
