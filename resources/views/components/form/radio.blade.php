@@ -5,7 +5,7 @@
 
 @foreach ($options as $value => $text)
 
-<div class="form-check mb-3">
+<div class="form-check mb-2">
 
     <input {{ $attributes->class([
             'form-check-input',

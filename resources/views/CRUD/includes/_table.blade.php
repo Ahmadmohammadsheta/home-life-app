@@ -11,7 +11,9 @@
         <!--div-->
         <div class="col-xl-12">
             <div class="card-header pb-0">
-                @include('crud.includes.table._tableHeader')
+
+                <x-table.header :table="$tableName" :object="$modelObjectName" />
+
             </div>
 
             <div class="table table-responsive table-stripped">
@@ -60,12 +62,14 @@
                                 'text-center '
                             ])
                             >
-                                @include('crud.includes.table._tableActions')
+
+                                <x-table.actions :id="$item->id" :table="$tableName" :object="$modelObjectName" />
                             </td>
                         </tr>
 
                         <!-- Modal -->
-                        @include('crud.includes.general._modal')
+
+                        <x-table.modal :id="$item->id" :name="$item->name" :table="$tableName" :object="$modelObjectName" />
 
                         @endforeach
                     </tbody>

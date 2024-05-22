@@ -3,6 +3,7 @@
     'name',
     'value' => '',
     'object' => '',
+    'objectName' => request()->route()->controller->additionalData['modelObjectName'],
     'required' => ''
 ])
 
@@ -21,8 +22,8 @@
 
     <x-error :name="$name" />
 
-    @if (Str::contains($value, $object))
-    <div class="mb-3">
+    @if ($type == 'file' && Str::contains($value, $objectName))
+    <div class="mb-0">
         <a href="{{ asset($object->$name) }}" target="_blank">
             <img src="{{ asset($object->$name) }}" alt="My Image" style="width:100px; height:75px">
         </a>

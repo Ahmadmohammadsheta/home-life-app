@@ -14,7 +14,8 @@ class CategoryRequest extends FormRequest
     {
         return [
             'id' => [
-                'nullable', 'exists:categories,id'
+                'nullable',
+                'exists:categories,id'
             ],
             'name' => [
                 'required',
@@ -58,7 +59,6 @@ class CategoryRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:255',
-                // "unique:categories,name,$this->id",
                 Rule::unique('categories', 'name')->ignore($id)
             ], //AMA>true
             'parent_id' =>[
@@ -82,8 +82,6 @@ class CategoryRequest extends FormRequest
                 'int',
                 'exists:types,id'
             ],
-            // 'name' => "required| unique:customers,name,$this->id",  //AMA.true
-            // 'name' => ['required', Rule::unique('customers', 'name')->ignore($this->id)], //AMA>true
         ];
     }
 
@@ -114,9 +112,9 @@ class CategoryRequest extends FormRequest
     public function messages()
     {
         return [
-            'unique' => 'The value of (:attribute) is exists',
-            'name.required' => 'The field (:attribute) is required',
-            'name.min' => 'The field (:attribute) must be more than 3 charachters'
+            // 'unique' => 'The value of (:attribute) is exists',
+            // 'name.required' => 'The (:attribute) field is required',
+            // 'name.min' => 'The {:attribute} field must be more than 3 charachters'
         ];
     }
 }

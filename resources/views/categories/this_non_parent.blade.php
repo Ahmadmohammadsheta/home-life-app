@@ -3,6 +3,6 @@
 
     @php($data = $thisRelatedThings)
 
-    @include('crud.includes.table._table')
+    @include('crud.includes.._table')
 
 @endif

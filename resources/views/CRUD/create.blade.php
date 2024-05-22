@@ -22,7 +22,7 @@
 
                 <input type="hidden" name="id" value="{{ $id }}">
 
-                @include('crud.includes.form._form', ['action' => 'Create'])
+                @include('crud.includes.._form', ['action' => 'Create'])
 
             </form>
         </div>

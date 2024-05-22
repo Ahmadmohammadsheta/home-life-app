@@ -18,7 +18,7 @@
 
     @elseif ($cloumnName == "image")
 
-    <x-form.input type="file" :name="$cloumnName" :object="$$modelObjectName" :value="old($cloumnName, $$modelObjectName->$cloumnName)" accept="image/*" />
+        <x-form.input type="file" :name="$cloumnName" :object="$$modelObjectName" :value="old($cloumnName, $$modelObjectName->$cloumnName)" accept="image/*" />
 
     @elseIf ($cloumnName == "is_parent") <!-- radio input -->
 
