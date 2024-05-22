@@ -22,7 +22,7 @@
 
     @elseIf ($cloumnName == "is_parent") <!-- radio input -->
 
-    <x-form.radio :name="$cloumnName" :checked="$$modelObjectName->$cloumnName" :options="['1' => 'True']" />
+        <x-form.radio :name="$cloumnName" :checked="$$modelObjectName->$cloumnName" :options="['1' => 'True']" />
 
     @endif
 

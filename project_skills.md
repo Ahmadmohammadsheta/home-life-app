@@ -26,6 +26,8 @@ PHP: [
     - $slug = request()->merge([
         'slug' => Str::slug(request()->name)
      ]);
+
+     - !(strtolower($value) == 'laravel')  // it's meaning if the condition not 
 ]
 
 setup: [
@@ -137,6 +139,11 @@ Blade: [
 
 Request: [
     - messages ['unique' => 'The value of (:attribute) is exists'], // (:attribute) as avariable to get the attribut name
+    - custom rule by a Closure function ,
+                function ($attribute, $value, $fail) {
+                    !strtolower($value) == 'laravel' ?: $fail($attribute, 'This name is not allowed');
+                }
+    - create app/Rule/Filter.php (custom Rule)
 ]
 
 Unit Test [
