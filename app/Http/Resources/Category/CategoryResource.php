@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources\Category;
 
-use App\Models\Category;
-use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,10 +18,11 @@ class CategoryResource extends JsonResource
     {
         $data = parent::toArray($request);
 
-        $data['parent'] = $this->parent;
+        $data['is_parent'] = $this->is_parent == 1 ? 'True' : 'False';
+        $data['parent'] = new CategoryResource($this->parent);
         $data['type'] = $this->type;
         $data['typeName'] = $this->typeName;
-        $data['parent->name'] = $this->parent ? $this->parentName : '';
+        $data['relations'] = $this->with($request);
 
 
         return $data;

@@ -25,7 +25,7 @@ class ChildCategroyService
 
         $members = $this->repository->thisMembers($parentId);
         foreach ($members as $member) {
-            $member->is_parent == 'True' ? array_push($thisChildren, $member) : '';
+            $member->is_parent == true ? array_push($thisChildren, $member) : '';
         }
 
         return ($thisChildren);
@@ -38,12 +38,10 @@ class ChildCategroyService
      */
     public function idsOfAllChildrenWhereThisParent($parentId): array
     {
-        $currentId = $parentId;
-
         $childrenIds = [];
 
-        $children = $this->allChildrenWhereThisParent($currentId);
-
+        $children = $this->allChildrenWhereThisParent($parentId);
+        
         foreach ($children as $child) {
             $childrenIds[] = $child->id;
         }

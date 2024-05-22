@@ -41,7 +41,7 @@ class ThingCategroyService
         $members = $this->repository->thisMembers($parentId);
 
         foreach ($members as $member) {
-            $member->is_parent == 'False' ? array_push($thisThings, $member) : '';
+            $member->is_parent === false ? array_push($thisThings, $member) : '';
         }
 
         return ($thisThings);

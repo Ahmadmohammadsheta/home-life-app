@@ -13,9 +13,40 @@ use App\Http\Traits\ImageProccessingTrait;
 class Category extends Model
 {
     use HasFactory, ImageProccessingTrait;
-    protected $fillable = ['name', 'image', 'parent_id', 'type_id', 'is_parent', 'all_parents_ids'];
 
-    protected $parentsIds;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'image',
+        'parent_id',
+        'type_id',
+        'is_parent',
+        'all_parents_ids'
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'is_parent' => 'boolean',
+        'all_parents_ids' => 'string',
+    ];
 
 
     public function parent(): BelongsTo
@@ -96,10 +127,10 @@ class Category extends Model
     *
     * @return Attribute
     */
-    protected function isParent(): Attribute
+    protected function isParentStatus(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value == 1 ? 'True' : 'False',
+            get: fn ($value) => $this->is_parent  == 1 ? 'True' : 'False',
         );
     }
 

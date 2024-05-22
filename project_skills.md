@@ -20,8 +20,12 @@ PHP: [
             $return = redirect()->route($this->uriRoute.'.index')->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح']);
     }
     return $return;
-    - (this value not found ?? will return the side value (and (??) meaning (? null :))) 
-    - (this value not found ?: will return the side value (and (?:) meaning (? true :))) 
+    - (this value not found ?? will return the side value (and (??) meaning (? null :))) if value == null
+    - (this value not found ?: will return the side value (and (?:) meaning (? true :))) if value return true else return another side value
+
+    - $slug = request()->merge([
+        'slug' => Str::slug(request()->name)
+     ]);
 ]
 
 setup: [
@@ -37,9 +41,12 @@ routes: [
     - controller
     - middleware
     - resource
-],[
+],
+
+Laravel helper methods: [
     - Route::currentRouteName()
     - request()->route()->
+    - $id = (request()->route('category'));
 ]
 
 RouteServiceProvider : [
@@ -117,23 +124,25 @@ Blade: [
     - request()->route('category.id')
     - @if (\View::exists("$tableName.index")) @include("$tableName.index") @endif
     - includeif()
-    - Str::contains($column['name'], '_id')
+    - Str::contains($cloumnName, '_id')
     - @includeIf("$tableName.show", ['page' => 'name'])
     - @yeild("name", ['page' => 'name'])
     - @section('page-header', {{ __(ucfirst($tableName)) }})
-    - @checked($$modelObjectName->$modelObjectNameValue == false)
-    - @selected($value->id == $$modelObjectName->$modelObjectNameValue)
-    - old($column['name'], defaultValue)
+    - @checked($$modelObjectName->$cloumnName === false)
+    - @selected($value->id == $$modelObjectName->$cloumnName)
+    - old($cloumnName, defaultValue)
+    - <x-error column="{{ $cloumnName }}" /> if attribute use {{  }}
+    - <x-error :name="$cloumnName" /> if :attribute don't use {{  }}
 ]
 
 Request: [
-    
+    - messages ['unique' => 'The value of (:attribute) is exists'], // (:attribute) as avariable to get the attribut name
 ]
 
 Unit Test [
     - Category CRUD tests are success;
 ]
 
-        // $slug = request()->merge([
-        //     'slug' => Str::slug(request()->name)
-        // ]);
+Component: [
+]
+        

@@ -50,9 +50,8 @@ class CategoryRequest extends FormRequest
     /**
      * update validations
      */
-    private function updateRequest()
+    private function updateRequest($id)
     {
-        $id = (request()->route()->parameters['category']['id']);
         return [
             'name' => [
                 'required',
@@ -103,9 +102,10 @@ class CategoryRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules($id = 0)
     {
-        return request()->method() == 'PUT' ? $this->updateRequest() : $this->storeRequest();
+        $id = (request()->route('category'));
+        return request()->method() == 'PUT' ? $this->updateRequest($id) : $this->storeRequest();
     }
 
     /**
@@ -114,7 +114,7 @@ class CategoryRequest extends FormRequest
     public function messages()
     {
         return [
-            'unique' => 'The value of (:attribute) is Unique',
+            'unique' => 'The value of (:attribute) is exists',
             'name.required' => 'The field (:attribute) is required',
             'name.min' => 'The field (:attribute) must be more than 3 charachters'
         ];

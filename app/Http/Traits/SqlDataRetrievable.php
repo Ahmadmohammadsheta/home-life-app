@@ -1,8 +1,6 @@
 <?php
 namespace App\Http\Traits;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,15 +11,8 @@ Trait SqlDataRetrievable
      */
     public function mysqlTables()
     {
-        $tables = DB::select('SHOW TABLES');
-        foreach ($tables as $table) {
-            $TablesNames[] = $table->Tables_in_home_life_app;
-        }
-        $filterTables = array_diff($TablesNames, ['personal_access_tokens', 'password_reset_tokens', 'migrations', 'failed_jobs']);
-        foreach ($filterTables as $filterTable) {
-            $myTables[] = Str::upper($filterTable);
-        }
-        return $myTables;
+        // return from Helpers/mysqlTables.php
+        return mysqlTables(['users']);
     }
 
     /**

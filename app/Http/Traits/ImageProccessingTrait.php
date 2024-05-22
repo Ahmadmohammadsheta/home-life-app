@@ -11,6 +11,7 @@ Trait ImageProccessingTrait
     // Mahmoud Kssab
     private $storage = 'storage';
     private $path = 'attachments';
+    private $modelObjectName;
 
     /**
      * img extenstions
@@ -61,8 +62,9 @@ Trait ImageProccessingTrait
      */
     public function setImage($img, $path, $width = null, $height = null)
     {
+        $this->modelObjectName = request()->route()->controller->additionalData['modelObjectName'];
         $manager = new ImageManager(new Driver()); // create image manager with desired driver
-        $imageName = time().$img->getClientOriginalName();
+        $imageName = $this->modelObjectName . time() . $img->getClientOriginalName();
         $image = $manager->read($img); // read image from image system
         $image->scale($width, $height); // resize image
 
@@ -142,7 +144,7 @@ Trait ImageProccessingTrait
     public function deleteImage($image, $path = null)
     {
         ($path == null) ?: $path = $path.'/';
-        
+
         if (file_exists($path . $image)) {
             return File::delete($path . $image);
         }

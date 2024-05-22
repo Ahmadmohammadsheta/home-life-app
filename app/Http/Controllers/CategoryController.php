@@ -69,7 +69,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $data = $this->service->returnToShowData($category);
-
+        
         return request()->wantsJson() ?
         response()->json($data) :
         view('crud.show', $data, ['columns' => $this->service->columns()]);
