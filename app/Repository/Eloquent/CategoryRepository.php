@@ -55,7 +55,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
         if (isset($attributes['parent_id'])) {
             $parent = $this->find($attributes['parent_id']);
-            $attributes['all_parents_ids'] = $parent->all_parents_ids != null ? implode(',', [$parent->all_parents_ids, $attributes['parent_id']]) : $attributes['parent_id'];
+            $attributes['all_parents_ids'] = $parent->all_parents_ids != null ? implode(',', [$parent->all_parents_ids, $parent->id]) : $attributes['parent_id'];
         }
 
         isset($attributes['is_parent']) ?: $attributes['is_parent'] = false;
@@ -64,7 +64,8 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
         if ($thisMembers != null) {
             foreach ($thisMembers as $thisMember) {
-                $all_parents_ids = implode(',', [$data->all_parents_ids, $id]);
+                $parent = $this->find($thisMember->parent_id);
+                $all_parents_ids = implode(',', [$parent->all_parents_ids, $parent->id]);
                 $thisMember->update(['all_parents_ids' => $all_parents_ids]);
             }
         }

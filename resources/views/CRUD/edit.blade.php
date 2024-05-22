@@ -21,7 +21,7 @@
                 @csrf
                 @method('PUT')
 
-                @include('crud.includes.._form', ['action' => 'Update'])
+                @include('crud.includes._form', ['action' => 'Update'])
             </form>
         </div>
     </div>

@@ -32,8 +32,8 @@ class CategroyService
     {
         $data = [
             'category' => new CategoryResource($category->with(['type', 'parent'])->find($category->id)),
-            'data' => CategoryResource::collection($this->childService->allChildrenWhereThisParent($category->id)), // get all the children data in the {$data}
-            'childrenData' => CategoryResource::collection($category->children), // get this children data only
+            'allRelatedChildren' => CategoryResource::collection($this->childService->allChildrenWhereThisParent($category->id)), // get all the children data in the {$data}
+            'thisRelatedChildren' => CategoryResource::collection($category->children), // get this children data only
             'allRelatedThings' => CategoryResource::collection($this->thingService->allThingsWhereThisParent($category->id)), // get all children data has no parent (all things)
             'thisRelatedThings' => CategoryResource::collection($category->things), // get this children data has no parent (this things)
             'allParentsForThisSon' => $this->parentService->allParentsForThisSon($category) // get this children data has no parent (this things)
