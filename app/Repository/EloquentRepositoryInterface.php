@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
 * Interface EloquentRepositoryInterface
@@ -14,7 +16,12 @@ interface EloquentRepositoryInterface
     /**
      * @return Collection
      */
-     public function all(): Collection;
+    public function all(): Collection;
+
+    /**
+     * @return LengthAwarePaginator
+     */
+    public function paginate($total = null): LengthAwarePaginator ;
 
    /**
     * @param array $attributes
@@ -38,16 +45,28 @@ interface EloquentRepositoryInterface
     * @param $id
     * @return response
     */
-    public function delete($id): ?Model;
+    public function softDelete($id): ?Model;
+
+
+    /**
+    * @param $id
+    * @return response
+    */
     public function forceDelete($id): ?Model;
 
+    /**
+     * Return the trashed data as a collection
+     *
+     * @return Builder
+     */
+    public function trashed(): Builder;
 
     /**
      * Write code on Method
      *
-     * @return response()
+     * @return Model
      */
-    public function restore($id);
+    public function restore($id): Model;
 
     /**
      * Write code on Method

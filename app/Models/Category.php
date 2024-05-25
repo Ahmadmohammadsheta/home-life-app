@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Http\Traits\ImageProccessingTrait;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory, ImageProccessingTrait;
+    use HasFactory, ImageProccessingTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -70,6 +72,38 @@ class Category extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class, 'type_id', 'id');
+    }
+
+    /**
+     * Filter Scope
+     */
+    public function scopeFilter(Builder $query, array $filters):void
+    {
+        // $filters['name'] ?? null means if $filters['name'] == null return null
+        $query->when($filters['name'] ?? null, function ($query, $search) {
+            $query->where('categories.name', 'LIKE', "%$search%");
+        });
+
+        $query->when($filters['is_parent'] ?? null, function ($query, $search) {
+            $query->where('categories.is_parent', $search);
+        });
+    }
+
+    /**
+     * Filter Scope
+     */
+    public function scopeIsParentDesc(Builder $query):void
+    {
+        // $filters['name'] ?? null means if $filters['name'] == null return null
+        $query->orderBy('categories.is_parent');
+    }
+
+    /**
+     * Scope a query to only include popular users.
+     */
+    public function scopePopular(Builder $query): void
+    {
+        $query->where('votes', '>', 100);
     }
 
     /**

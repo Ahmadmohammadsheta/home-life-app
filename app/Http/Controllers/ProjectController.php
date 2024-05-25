@@ -89,7 +89,7 @@ class ProjectController extends Controller
      */
     public function destroy(Request $request, Project $project)
     {
-        $this->repository->delete($project->id);
+        $this->repository->softDelete($project->id);
         return redirect()->route($this->additionalData['tableName'].'.index')->with('success', 'تم الحذف بنجاح');
     }
 }

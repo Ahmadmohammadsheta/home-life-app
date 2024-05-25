@@ -24,7 +24,7 @@ class CategoryRequest extends FormRequest
                 'min:3',
                 'max:255',
                 Rule::unique('categories', 'name'),
-                new Filter()
+                new Filter(['non', 'admin'])
             ], //AMA>true
             'parent_id' =>[
                 'nullable',
@@ -62,10 +62,10 @@ class CategoryRequest extends FormRequest
                 'min:3',
                 'max:255',
                 Rule::unique('categories', 'name')->ignore($id),
-                // new Filter(),
-                function ($attribute, $value, $fail) {
-                    !(strtolower($value) == 'laravel') ?: $fail($attribute, 'This name is not allowed');
-                }
+                new Filter(['non', 'admin']),
+                // function ($attribute, $value, $fail) {
+                //     !(strtolower($value) == 'laravel') ?: $fail($attribute, 'This name is not allowed');
+                // }
             ], //AMA>true
             'parent_id' =>[
                 'nullable',

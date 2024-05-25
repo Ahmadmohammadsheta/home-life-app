@@ -28,6 +28,18 @@ PHP: [
      ]);
 
      - !(strtolower($value) == 'laravel')  // it's meaning if the condition not 
+
+     - [Category::query() // to get any query you run after this lin
+            Category::query();
+
+            if ($name = $request->query('name')) {
+                $query->where('name', 'LIKE', "%$name%");
+            }
+
+            if ($isParent = $request->query('is_parent')) {
+                $query->whereIsParent($isParent);
+            }
+        ]
 ]
 
 setup: [
@@ -43,12 +55,37 @@ routes: [
     - controller
     - middleware
     - resource
+    - Route::put('categories/{category}/restore', 'restore')->name('categories.restore')->where('category', '\d+'); // \d its mean any digit + mean more 111111
+
 ],
 
 Laravel helper methods: [
     - Route::currentRouteName()
     - request()->route()->
     - $id = (request()->route('category'));
+    - illunenat/constract/.... // use any interface
+    - // to make the table pagination using bootstrap css becausee the default using tailwind
+        Paginator::useBootstrapFive();
+]
+
+Laravel: [
+        
+]
+
+AppServiceProvider : [
+        [
+            // to use the filter in the same request validation syntax => 'name'=> 'required|filter' // AMA custom
+            Validator::extend('filter', function($attribute, $value, $params){
+                return in_array($value, $params);
+            }, 
+        ]"The value is prohibted");
+
+        [
+            // to make the table pagination using bootstrap css becausee the default using tailwind
+            Paginator::useBootstrapFive();
+            // Paginator::defaultView('crud.pagination.custom')
+        ];
+    }
 ]
 
 RouteServiceProvider : [
@@ -132,9 +169,13 @@ Blade: [
     - @section('page-header', {{ __(ucfirst($tableName)) }})
     - @checked($$modelObjectName->$cloumnName === false)
     - @selected($value->id == $$modelObjectName->$cloumnName)
-    - old($cloumnName, defaultValue)
+    - old($cloumnName, defaultValue) // working only in the post
     - <x-error column="{{ $cloumnName }}" /> if attribute use {{  }}
     - <x-error :name="$cloumnName" /> if :attribute don't use {{  }}
+    - {{ $data->withQueryString()->append(['column' => 'value'])->links() }} // to show the paginate links // withQueryString-> to save the search paraneter in the url when refreh page or go to an another page // ->append() to add another parameter to search url
+
+    - {{ URL::current() }} return thr current route
+    
 ]
 
 Request: [
@@ -153,3 +194,7 @@ Unit Test [
 Component: [
 ]
         
+
+Commands: [
+    - php artisan vendor:publish --tag=laravel-pagination // to publish a copy of ogiginal pagination files in view folder
+]

@@ -4,8 +4,10 @@ namespace App\Repository\Eloquent;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Traits\ImageProccessingTrait;
 use App\Repository\EloquentRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BaseRepository implements EloquentRepositoryInterface
 {
@@ -43,6 +45,14 @@ class BaseRepository implements EloquentRepositoryInterface
     }
 
     /**
+     * @return LengthAwarePaginator
+     */
+    public function paginate($total = null): LengthAwarePaginator
+    {
+        return $this->model->paginate($total);
+    }
+
+    /**
      * @param array $attributes
      *
      * @return Model
@@ -73,17 +83,6 @@ class BaseRepository implements EloquentRepositoryInterface
     }
 
     /**
-     * Delete a model row
-     */
-    public function delete($id): ?Model
-    {
-        $data = $this->model->findOrFail($id);
-
-        $data->delete();
-        return $data;
-    }
-
-    /**
      * Soft delete a model row
      */
     public function softDelete($id): ?Model
@@ -91,12 +90,22 @@ class BaseRepository implements EloquentRepositoryInterface
         $data = $this->model->findOrFail($id);
 
         $data->delete();
+
         return $data;
     }
 
+    /**
+     * @param $id
+     * @return response
+     * Force delete a model row
+     */
     public function forceDelete($id): ?Model
     {
-        return $this->model->onlyTrashed()->findOrFail($id)->forceDelete();
+        $data = $this->model->onlyTrashed()->findOrFail($id);
+
+        $data->forceDelete();
+
+        return $data;
     }
 
     /**
@@ -110,25 +119,28 @@ class BaseRepository implements EloquentRepositoryInterface
     }
 
     /**
-     * Write code on Method
-     * @param $id
-     * @return Model
+     * Return the trashed data as a collection
+     *
+     * @return Builder
      */
-    public function restore($id)
+    public function trashed(): Builder
     {
-        return $this->model->withTrashed()->findOrFail($id)->restore();
+        return $this->model->onlyTrashed();
     }
 
     /**
      * Write code on Method
-     *
+     * @param $id
      * @return Model
      */
-    // public function getDelete()
-    // {
-    //     return $this->model->withTrashed()->get();
+    public function restore($id): Model
+    {
+        $data = $this->model->onlyTrashed()->findOrFail($id);
 
-    // }
+        $data->restore();
+
+        return $data;
+    }
 
     public function restoreAll()
     {

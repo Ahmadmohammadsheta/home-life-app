@@ -4,6 +4,7 @@ namespace App\Services\Category;
 
 use App\Models\Category;
 use App\Repository\CategoryRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class ChildCategroyService
 {
@@ -16,10 +17,10 @@ class ChildCategroyService
 
     /**
     * @param id $parentId
-     * @return array
+     * @return Collection
      * get all the children Category of shown category ass an array
      */
-    public function allChildrenWhereThisParent($parentId): array
+    public function allChildrenWhereThisParent($parentId): Collection
     {
         $thisChildren = [];
 
@@ -28,7 +29,7 @@ class ChildCategroyService
             $member->is_parent == true ? array_push($thisChildren, $member) : '';
         }
 
-        return ($thisChildren);
+        return Collection::make($thisChildren);
     }
 
     /**
@@ -41,7 +42,7 @@ class ChildCategroyService
         $childrenIds = [];
 
         $children = $this->allChildrenWhereThisParent($parentId);
-        
+
         foreach ($children as $child) {
             $childrenIds[] = $child->id;
         }

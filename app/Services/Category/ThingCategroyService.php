@@ -31,10 +31,10 @@ class ThingCategroyService
 
     /**
     * @param id $parentId
-     * @return array
+     * @return Collection
      * get only the final Category of shown category (things)
      */
-    public function allThingsWhereThisParent($parentId): array
+    public function allThingsWhereThisParent($parentId): Collection
     {
         $thisThings = [];
 
@@ -44,7 +44,7 @@ class ThingCategroyService
             $member->is_parent === false ? array_push($thisThings, $member) : '';
         }
 
-        return ($thisThings);
+        return Collection::make($thisThings);
     }
 
     /**

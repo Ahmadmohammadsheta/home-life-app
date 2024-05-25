@@ -3,6 +3,8 @@
 namespace App\Repository\Eloquent;
 
 use App\Models\Category;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use App\Http\Traits\SqlDataRetrievable;
 use Illuminate\Database\Eloquent\Model;
 use App\Repository\CategoryRepositoryInterface;
@@ -20,6 +22,8 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     {
         parent::__construct($model);
     }
+
+
 
    /**
     * @param array $attributes
@@ -73,26 +77,80 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         return $data;
     }
 
-   /**
-    * Delete a model row
-     * @return Model
-    */
-    public function delete($id): ?Model
+    /**
+     * @return ?Model // thi mean if model find return the model else return null
+     * Soft delete a model row
+     */
+    public function softDelete($id): ?Model
     {
         $data = $this->model->findOrFail($id);
 
-        $this->deleteImage('categories', $data['image']); // Working only if file exists
-
         $data->delete();
+
         return $data;
+    }
+
+    public function forceDelete($id): ?Model
+    {
+        $data = $this->model->onlyTrashed()->findOrFail($id);
+
+        try {
+            // DB::beginTransaction();
+
+            // Execute database operations here
+
+            $this->deleteImage('categories', $data['image']); // Working only if file exists
+
+            $data->forceDelete();
+
+            return $data;
+
+            // DB::commit();
+
+        } catch (\Exception $e) {
+
+            return $data;
+            // DB::rollBack();
+
+        }
+
+    }
+
+    /**
+     * Write code on Method
+     *
+     * @return response
+     */
+    public function forceDeleteAll()
+    {
+        $data = $this->model->onlyTrashed();
+
+        try {
+            DB::beginTransaction();
+
+            // Execute database operations here
+
+            foreach ($data as $item) {
+                $this->deleteImage('categories', $item['image']); // Working only if file exists
+            }
+
+            return $this->model->onlyTrashed()->forceDelete();
+
+            DB::commit();
+
+        } catch (\Throwable $th) {
+
+            DB::rollBack();
+
+        }
     }
 
     /**
      * @param id $parentId
      *
-     * @return array
+     * @return Collection
      */
-    public function thisMembers($parentId): array
+    public function thisMembers($parentId): Collection
     {
         $thisMembers = [];
 
@@ -103,6 +161,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
                 array_push($thisMembers, $childOrThing);
             }
         }
-        return $thisMembers;
+
+        return Collection::make($thisMembers);
     }
 }

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use App\Repository\CategoryRepositoryInterface;
-use App\Http\Resources\Category\CategoryResource;
+use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
 use App\Services\Category\CategroyService;
+use App\Repository\CategoryRepositoryInterface;
 use App\Services\Category\ChildCategroyService;
-use App\Services\Category\ParentCategroyService;
 use App\Services\Category\ThingCategroyService;
+use App\Services\Category\ParentCategroyService;
+use App\Http\Resources\Category\CategoryResource;
 
 class CategoryController extends Controller
 {
@@ -32,7 +33,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data = CategoryResource::collection($this->repository->all());
+        $request = request();
+
+        $data = CategoryResource::collection($this->service->indexWithParentName($request->all(), 7));
+        // dd($data);
         return request()->wantsJson() ? response()->json($data) :
         view('crud.index',
         ['data' => $data],
@@ -69,7 +73,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $data = $this->service->returnToShowData($category);
-        
+
         return request()->wantsJson() ?
         response()->json($data) :
         view('crud.show', $data, ['columns' => $this->service->columns()]);
@@ -98,7 +102,7 @@ class CategoryController extends Controller
             [
                 $this->additionalData['modelObjectName'] => $data->parent_id ?: $data->id
             ])
-            ->with('success', 'تم التعديل بنجاح');
+            ->with(['session' => 'success', 'message' => "The $data->name has been updated successfully"]);
     }
 
     /**
@@ -106,10 +110,53 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $this->repository->delete($category->id);
+        $this->repository->softDelete($category->id);
 
         return request()->wantsJson() ?
         response()->json("تم الحذف بنجاح", 200) :
-        redirect()->route($this->uriRoute.'.index')->with('success', 'تم الحذف بنجاح');
+        redirect()->route($this->uriRoute.'.index')->with(['session' => 'success', 'message' => "The $category->name has been deleted successfully"]);
+    }
+
+    /**
+     * Get the trashed data.
+     */
+    public function trashed()
+    {
+        $request = request();
+
+        $data = CategoryResource::collection($this->service->trashed($request->all(), 7));
+
+        return request()->wantsJson() ? response()->json($data) :
+        view('crud.trashed',
+        ['data' => $data],
+        ['columns' => $this->service->columns()]);
+    }
+
+    /**
+     * Get the trashed data.
+     */
+    public function restore(Request $request,$id)
+    {
+        $data = $this->repository->restore($id);
+
+        return request()->wantsJson() ? response()->json($data) :
+        redirect()->route($this->uriRoute.'.index',
+        [
+            'data' => $data,
+            'columns' => $this->service->columns()
+        ])
+        ->with(['session' => 'success', 'message' => "The $data->name has been restored successfully"]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function forceDelete($id)
+    {
+        $data = $this->repository->forceDelete($id);
+
+        return request()->wantsJson() ?
+        response()->json("تم الحذف بنجاح", 200) :
+        redirect()->route($this->uriRoute.'.trashed')->with(['session' => 'success', 'message' =>  "The $data->name has been deleted successfully"]);
     }
 }

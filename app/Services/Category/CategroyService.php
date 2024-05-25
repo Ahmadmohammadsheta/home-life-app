@@ -4,8 +4,9 @@ namespace App\Services\Category;
 
 use App\Models\Type;
 use App\Models\Category;
-use Illuminate\Support\Facades\DB;
 use App\Repository\Eloquent\TypeRepository;
+use App\Repository\CategoryRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Traits\SqlDataRetrievable; // AMA custom trait
 
@@ -17,11 +18,45 @@ class CategroyService
      * Repository constructor method
      */
     public function __construct(
+        private CategoryRepositoryInterface $repository,
         private ParentCategroyService $parentService,
         private ChildCategroyService $childService,
         private ThingCategroyService $thingService,
         private Category $category
         ) {}
+
+
+    /**
+     * @return LengthAwarePaginator
+     */
+    public function filterPaginate(array $attributes, $total): LengthAwarePaginator
+    {
+        return $this->category->filter($attributes)->isParentDesc()->paginate($total);
+    }
+
+    /**
+     * @return LengthAwarePaginator
+     */
+    public function indexWithParentName(array $attributes, $total): LengthAwarePaginator
+    {
+        return $this->category->leftJoin('categories as parents', 'parents.id', '=', 'categories.parent_id' )
+            ->select([
+                'categories.*',
+                'parents.name as parent_name'
+            ])
+            ->filter($attributes)
+            ->isParentDesc()
+            ->paginate($total);
+    }
+    /**
+     * Return the trashed data as a collection
+     *
+     * @return LengthAwarePaginator
+     */
+    public function trashed(array $attributes): LengthAwarePaginator
+    {
+        return $this->repository->trashed()->filter($attributes)->paginate(5);
+    }
 
    /**
     * columnsAsKeysAndValues
@@ -33,9 +68,9 @@ class CategroyService
         $data = [
             'category' => new CategoryResource($category->with(['type', 'parent'])->find($category->id)),
             'allRelatedChildren' => CategoryResource::collection($this->childService->allChildrenWhereThisParent($category->id)), // get all the children data in the {$data}
-            'thisRelatedChildren' => CategoryResource::collection($category->children), // get this children data only
+            'thisRelatedChildren' => CategoryResource::collection($category->children()->paginate()), // get this children data only
             'allRelatedThings' => CategoryResource::collection($this->thingService->allThingsWhereThisParent($category->id)), // get all children data has no parent (all things)
-            'thisRelatedThings' => CategoryResource::collection($category->things), // get this children data has no parent (this things)
+            'thisRelatedThings' => CategoryResource::collection($category->things()->paginate()), // get this children data has no parent (this things)
             'allParentsForThisSon' => $this->parentService->allParentsForThisSon($category) // get this children data has no parent (this things)
         ];
         return ($data);
@@ -65,7 +100,7 @@ class CategroyService
     public function columns(): array
     {
         $data = [
-            'custom' => ['id', 'name', 'image', 'parentName', 'is_parent', 'typeName'],
+            'custom' => ['id', 'name', 'image', 'parent_name', 'is_parent', 'typeName'],
             'columnsAsKeys' => ['id', 'name', 'Image', 'Parent', 'Is parent', 'Type'],
             'excepted' => ['all_parents_ids'],
         ];

@@ -76,7 +76,7 @@ class TypeController extends Controller
      */
     public function destroy(Request $request, Type $type)
     {
-        $this->repository->delete($type->id);
+        $this->repository->softDelete($type->id);
         return redirect()->route($this->additionalData['tableName'].'.index')->with('success', 'تم الحذف بنجاح');
     }
 }

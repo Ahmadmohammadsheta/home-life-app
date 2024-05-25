@@ -35,12 +35,12 @@ class ParentCategroyService
 
         $parentsIds = explode(',', $category->all_parents_ids);
 
-        $parents = $this->category->whereIn('id', $parentsIds)->get();
+        $parents = $this->category->whereIn('id', $parentsIds)->paginate();
 
         foreach ($parents as $thisParent) {
             $thisParents[] = $thisParent;
             $parentsIds = explode(',', $thisParent->all_parents_ids);
-            $parents = $this->category->whereIn('id', $parentsIds)->get();
+            $parents = $this->category->whereIn('id', $parentsIds)->paginate();
         }
 
         return ($thisParents);

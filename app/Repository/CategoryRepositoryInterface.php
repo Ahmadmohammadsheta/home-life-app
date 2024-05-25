@@ -1,12 +1,14 @@
 <?php
 namespace App\Repository;
 
+use Illuminate\Support\Collection;
+
 interface CategoryRepositoryInterface {
 
     /**
      * @param id $parentId
      *
-     * @return array
+     * @return Collection
      */
-    public function thisMembers($parentId): array;
+    public function thisMembers($parentId): Collection;
 }

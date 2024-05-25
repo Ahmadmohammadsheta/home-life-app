@@ -50,7 +50,7 @@ Trait SqlDataRetrievable
         $allColumns = $this->tableColumnNames($modelInstance);
 
         // merge the excepted colums with the default
-        $exceptedColumns = array_merge($exceptedData, ['created_at', 'updated_at']);
+        $exceptedColumns = array_merge($exceptedData, ['created_at', 'updated_at', 'deleted_at']);
 
         // filter the array by show the columns without the all excepted
         return array_diff($allColumns, $exceptedColumns);
