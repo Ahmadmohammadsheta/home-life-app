@@ -26,12 +26,6 @@ Route::get('/', function () {
     return view('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', function () {
-    // $user = auth()->user(); // worked
-    // $user->notify(new LoginNotification());
-    return view('home');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -41,56 +35,24 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 //-----------------------------------------------------------------------------------------------------------
-Route::name('socialite.')->controller(App\Http\Controllers\packeges\SocialiteController::class)->group(function () {
+Route::name('socialite.')->controller(App\Http\Controllers\packages\SocialiteController::class)->group(function () {
     Route::get('{provider}/login', 'login')->name('login');
     Route::get('{provider}/redirect', 'redirect')->name('redirect');
 });
 //______________________________________________________________________________________________________________________
 
+require __DIR__.'/dashboard.php';
 
 
 //-----------------------------------------------------------------------------------------------------------
-// Route::group(['prifex' => 'main_projects', 'as' => 'main_projects.' , 'namespace' => 'App\Http\Controllers'], function() {
-Route::group(['prifex' => 'main_projects', 'as' => 'main_projects.'], function() {
-    Route::resource('/main_projects', 'MainProjectController');
-    // Route::get('/', 'yes')->name('yes');
+/**
+ * Admin pages routes
+ * It must be in the end of all routes
+ */
+Route::prefix("")->group(function(){
+    Route::controller(App\Http\Controllers\AdminController::class)->group(function () {
+        Route::get('/{page}', 'index');
+    });
 });
-
 //______________________________________________________________________________________________________________________
-
-
-Route::middleware('auth')->group(function () {
-
-    //-----------------------------------------------------------------------------------------------------------
-    Route::resource('/types', 'TypeController');
-    //______________________________________________________________________________________________________________________
-
-    //-----------------------------------------------------------------------------------------------------------
-    Route::resource('/projects', 'ProjectController');
-    //______________________________________________________________________________________________________________________
-
-    //-----------------------------------------------------------------------------------------------------------
-    Route::resource('categories', 'CategoryController');
-    Route::controller(CategoryController::class)->group(function () {
-        Route::get('categories/createWithType/{category}', 'createWithType')->name('categories.createWithType');
-        Route::get('categories/category/{category}', 'category');
-    });
-    //______________________________________________________________________________________________________________________
-
-    //-----------------------------------------------------------------------------------------------------------
-    Route::resource('/things', 'ThingController');
-    //______________________________________________________________________________________________________________________
-
-});
-    //-----------------------------------------------------------------------------------------------------------
-    /**
-     * Admin pages routes
-     * It must be in the end of all routes
-     */
-    Route::prefix("")->group(function(){
-        Route::controller(App\Http\Controllers\AdminController::class)->group(function () {
-            Route::get('/{page}', 'index');
-        });
-    });
-    //______________________________________________________________________________________________________________________
 

@@ -1,12 +1,14 @@
 @props([
     'id',
+    'modalId',
     'name',
     'table',
-    'object'
+    'object',
+    'route' => "destroy"
 ])
 
 <!-- Modal -->
-<div class="modal fade" id="staticBackdrop{{$id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="{{$modalId}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -19,7 +21,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
                 <button form="delete{{$id}}" class="btn btn-danger">{{ __('Delete') }}</button>
-                <form id="delete{{$id}}" action="{{  route($table.'.destroy', [$object => $id]) }}" method="POST">@csrf @method('DELETE')</form>
+                <form id="delete{{$id}}" action="{{ route($table.'.'.$route, [$object => $id]) }}" method="POST">@csrf @method('DELETE')</form>
             </div>
         </div>
     </div>

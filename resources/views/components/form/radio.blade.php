@@ -1,6 +1,6 @@
 
 @props([
-    'name', 'options', 'checked' => false
+    'name', 'type' => 'checkbox', 'options', 'checked' => false
 ])
 
 @foreach ($options as $value => $text)
@@ -12,7 +12,7 @@
             'is-invalid' => $errors->has($name)
         ]) }}
 
-        type="checkbox"
+        type="{{ $type }}"
         id="flexCheckChecked"
         value="{{ $value }}"
         name="{{ $name }}"
