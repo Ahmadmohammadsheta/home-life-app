@@ -7,14 +7,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use App\Repository\CategoryRepositoryInterface;
 
-class ThingCategroyService
+class ThingCategoryService
 {
     /**
      * Repository constructor method
      */
     public function __construct(
         private CategoryRepositoryInterface $repository,
-        private ChildCategroyService $child,
+        private ChildCategoryService $child,
         private Category $category
         ) {}
 

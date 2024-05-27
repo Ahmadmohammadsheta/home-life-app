@@ -6,15 +6,15 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 
-Trait ImageProccessingTrait
+Trait ImageProcessingTrait
 {
-    // Mahmoud Kssab
+    // Mahmoud Kassab
     private $storage = 'storage';
     private $path = 'attachments';
     private $modelObjectName;
 
     /**
-     * img extenstions
+     * img extensions
      */
     public function getMime ($mime){
         if ($mime == 'image/jpg')
@@ -80,7 +80,7 @@ Trait ImageProccessingTrait
     }
 
     /**
-     * Mahmoud Kssab Set array of Images
+     * Mahmoud Kassab Set array of Images
      */
     public function setImages($images, $path, $column, $width = null, $height = null)
     {
@@ -139,7 +139,7 @@ Trait ImageProccessingTrait
     }
 
     /**
-     * Mahmoud Kssab Delete image
+     * Mahmoud Kassab Delete image
      */
     public function deleteImage($image, $path = null)
     {
@@ -151,7 +151,7 @@ Trait ImageProccessingTrait
     }
 
     /**
-     * Mahmoud Kssab Delete images
+     * Mahmoud Kassab Delete images
      */
     public function deleteImages($images, $path)
     {

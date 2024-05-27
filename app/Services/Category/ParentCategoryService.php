@@ -5,12 +5,12 @@ namespace App\Services\Category;
 use App\Models\Category;
 use Illuminate\Support\Collection;
 
-class ParentCategroyService
+class ParentCategoryService
 {
     /**
      * Repository constructor method
      */
-    public function __construct(private ChildCategroyService $child, private Category $category) {}
+    public function __construct(private ChildCategoryService $child, private Category $category) {}
 
     /**
      * @return Collection

@@ -5,13 +5,13 @@ namespace App\Repository\Eloquent;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use App\Http\Traits\ImageProccessingTrait;
+use App\Http\Traits\ImageProcessingTrait;
 use App\Repository\EloquentRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class BaseRepository implements EloquentRepositoryInterface
 {
-    use ImageProccessingTrait;
+    use ImageProcessingTrait;
 
     /**
      * @var Model

@@ -32,12 +32,12 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $columsWithDataTypes = $this->repository->columnsTypes();
+        $columnsWithDataTypes = $this->repository->columnsTypes();
         $arrayForSelectInput = $this->repository->arrayForSelectInput();
 
         return view('crud.create', [
             'project' => new Project(),
-            'columsWithDataTypes'=>$columsWithDataTypes,
+            'columnsWithDataTypes'=>$columnsWithDataTypes,
             'arrayForSelectInput' => $arrayForSelectInput
         ]);
     }
@@ -70,9 +70,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $columsWithDataTypes = $this->repository->columnsTypes();
+        $columnsWithDataTypes = $this->repository->columnsTypes();
 
-        return view('crud.edit', [$this->additionalData['modelObjectName'] => $project, 'columsWithDataTypes'=>$columsWithDataTypes, 'modelObjectName' => $this->additionalData['modelObjectName'], 'tableName' => $this->additionalData['tableName']]);
+        return view('crud.edit', [$this->additionalData['modelObjectName'] => $project, 'columnsWithDataTypes'=>$columnsWithDataTypes, 'modelObjectName' => $this->additionalData['modelObjectName'], 'tableName' => $this->additionalData['tableName']]);
     }
 
     /**

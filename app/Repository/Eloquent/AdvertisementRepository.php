@@ -5,11 +5,11 @@ namespace App\Repository\Eloquent;
 use Carbon\Carbon;
 use App\Models\Advertisement;
 use App\Repository\AdvertisementRepositoryInterface;
-use App\Http\Traits\ImageProccessingTrait as TraitImageProccessingTrait;
+use App\Http\Traits\ImageProcessingTrait as TraitImageProcessingTrait;
 
 class AdvertisementRepository extends BaseRepository implements AdvertisementRepositoryInterface
 {
-    use TraitImageProccessingTrait;
+    use TraitImageProcessingTrait;
 
    /**
     * AdvertisementRepository constructor.

@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\CategoryRequest;
-use App\Services\Category\CategroyService;
+use App\Services\Category\CategoryService;
 use App\Repository\CategoryRepositoryInterface;
-use App\Services\Category\ChildCategroyService;
-use App\Services\Category\ThingCategroyService;
-use App\Services\Category\ParentCategroyService;
+use App\Services\Category\ChildCategoryService;
+use App\Services\Category\ThingCategoryService;
+use App\Services\Category\ParentCategoryService;
 use App\Http\Resources\Category\CategoryResource;
 
 class CategoryController extends Controller
@@ -19,10 +19,10 @@ class CategoryController extends Controller
      */
     public function __construct(
         private CategoryRepositoryInterface $repository,
-        private CategroyService $service,
-        private ParentCategroyService $parentService,
-        private ChildCategroyService $childService,
-        private ThingCategroyService $thingService,
+        private CategoryService $service,
+        private ParentCategoryService $parentService,
+        private ChildCategoryService $childService,
+        private ThingCategoryService $thingService,
         ) {
             $this->additionalData = $this->additionalData(new Category, 'category');
             $this->uriRoute = $this->additionalData['tableName'];

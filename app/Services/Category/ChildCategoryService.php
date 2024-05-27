@@ -6,7 +6,7 @@ use App\Models\Category;
 use App\Repository\CategoryRepositoryInterface;
 use Illuminate\Support\Collection;
 
-class ChildCategroyService
+class ChildCategoryService
 {
     /**
      * Child Services constructor method
