@@ -20,8 +20,27 @@ $tableName = request()->route()->controller->additionalData['tableName'];
     <div class="row">
         <!--div-->
         <div class="col-xl-12">
+            @if (View::exists("$tableName.trashed"))
+                @include("$tableName.trashed")
+            @else
+                @include('crud.includes._table',
+                [
+                    'component' => 'tableForTrashed',
+                    'first'=> [
+                        'route' => 'index',
+                        'name' => 'INDEX',
+                        'color' => 'primary'
+                        ],
+                    'second' =>
+                        [
+                        'route' => 'trashed',
+                        'name' => 'TRASHED',
+                        'color' => 'danger'
+                        ]
+                    ])
+            @endif
 
-            <x-table.header
+            {{-- <x-table.header
                 :table="$tableName"
                 :object="$modelObjectName"
                 :first="[
@@ -44,7 +63,7 @@ $tableName = request()->route()->controller->additionalData['tableName'];
                 :values="$columnsAsValues"
                 :table="$tableName"
                 :object="$modelObjectName"
-            />
+            /> --}}
         </div>
         <!--/div-->
     </div>

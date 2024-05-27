@@ -1,8 +1,12 @@
 @props([
     'table',
     'object',
-    'first',
-    'second',
+    'first' => [
+        'route' => 'index',
+        'name' => 'NOT TRASHED',
+        'color' => 'primary'
+    ],
+    'second'
 ])
 
 
@@ -10,9 +14,22 @@
 
     <div class="w-50">
         <form action="{{ URL::current() }}" method="get" class="d-flex">
-            <x-form.input name="name" class="m-1" :value="request('name')" placeholder="Search......" />
-            <x-form.radio name="is_parent" type="radio" class="m-1" :checked="request('is_parent')" :options="[true => 'True']" />
-            <x-form.radio name="is_parent" type="radio" class="m-1" :checked="request('is_parent')" :options="['false' => 'False']" />
+            <x-form.input
+                name="name"
+                class="m-1"
+                :value="request('name')"
+                placeholder="Search......"
+            />
+            <x-form.radio
+                name="is_parent"
+                type="radio" class="m-1"
+                :checked="request('is_parent')"
+                :options="[
+                    true => 'True',
+                    'false' => 'False',
+                    '' => 'all'
+                ]"
+            />
             <button type="submit" class="btn btn-dark m-1 border-0 rounded-0">
                 <i class="lni lni-search-alt"></i>
             </button>
@@ -25,8 +42,12 @@
     </div>
     @else
     <div class="d-flex">
-        <a class="btn btn-{{ $first['color'] }}" href="{{ route($table.'.'. $first['route']) }}">{{ __($first['route']) }}</a>
-        <a class="btn btn-{{ $second['color'] }} mx-3" href="{{ route($table.'.'. $second['route']) }}">{{ __($second['route']) }}</a>
+        @if ($first != null)
+        <a class="btn btn-{{ $first['color'] }}" href="{{ route($table.'.'. $first['route']) }}">{{ __($first['name']) }}</a>
+        @endif
+        @if ($second != null)
+        <a class="btn btn-{{ $second['color'] }} mx-3" href="{{ route($table.'.'. $second['route']) }}">{{ __($second['name']) }}</a>
+        @endif
     </div>
     @endif
 

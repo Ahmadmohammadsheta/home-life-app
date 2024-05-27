@@ -1,6 +1,6 @@
 
 
-@foreach ($columsWithDataTypes as $column)
+@foreach ($columnsWithDataTypes as $column)
 
     @php
         $cloumnName = $column['name'];

@@ -15,7 +15,25 @@
 @section('content')
     <!-- row -->
 
-    @if (View::exists("$tableName.index")) @include("$tableName.index") @else @include('crud.includes._table', ['table' => 'table']) @endif
+    @if (View::exists("$tableName.index"))
+        @include("$tableName.index")
+    @else
+        @include('crud.includes._table',
+        [
+            'component' => 'table',
+            'first'=> [
+                'route' => 'create',
+                'name' => 'CREATE',
+                'color' => 'primary'
+                ],
+            'second' =>
+                [
+                'route' => 'trashed',
+                'name' => 'TRASHED',
+                'color' => 'danger'
+                ]
+            ])
+    @endif
 
     <!-- row closed -->
 @endsection

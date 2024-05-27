@@ -13,21 +13,12 @@
             <x-table.header
                 :table="$tableName"
                 :object="$modelObjectName"
-                :first="[
-                    'route' => 'create',
-                    'name' => 'ADD',
-                    'color' => 'primary'
-                    ]"
-                :second="
-                    [
-                    'route' => 'trashed',
-                    'name' => 'TRASHED',
-                    'color' => 'danger'
-                    ]"
+                :first="isset($first) ? $first : ''"
+                :second="isset($second) ? $second : ''"
             />
 
             <x-table.table
-                component="table"
+                :component="$component"
                 :data="$data"
                 :keys="$columnsAsKeys"
                 :values="$columnsAsValues"
