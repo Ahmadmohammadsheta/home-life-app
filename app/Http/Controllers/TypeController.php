@@ -21,18 +21,17 @@ class TypeController extends Controller
      */
     public function index()
     {
-        $types = Type::with('categories')
+        // $types = Type::with('categories')
         // ->select('categories.*')
         // ->addSelect(DB::raw('(SELECT COUNT(*) FROM categories WHERE parent_id = categories.id ) as categories_count'))
-        ->selectRaw('(SELECT COUNT(*) FROM categories WHERE id = categories.parent_id ) as categories_count')
+        // ->selectRaw('(SELECT COUNT(*) FROM categories WHERE id = categories.parent_id ) as categories_count')
         // ->withCount(// relation as new_name)
-            ->withCount([
-                'relation_name as new_name' => function($query){
-                    $query->where('is_parent', true); // to add new condition to the withCount
-                }
-            ])
-
-            ->paginate(29);
+            // ->withCount([
+            //     'relation_name as new_name' => function($query){
+            //         $query->where('is_parent', true); // to add new condition to the withCount
+            //     }
+            // ])
+            // ->paginate(29);
         $data = $this->repository->all();
 
         return request()->wantsJson() ?

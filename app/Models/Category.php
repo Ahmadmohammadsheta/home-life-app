@@ -99,7 +99,7 @@ class Category extends Model
     {
         // $filters['name'] ?? null means if $filters['name'] == null return null
         $query->when($filters['name'] ?? null, function ($query, $search) {
-            $query->where('categories.name', 'LIKE', "%$search%");
+            $query->where('categories.name', 'LIKE', "%$search%")->orWhere('parents.name', 'LIKE', "%$search%");
         });
 
         $query->when($filters['is_parent'] ?? null, function ($query, $search) {

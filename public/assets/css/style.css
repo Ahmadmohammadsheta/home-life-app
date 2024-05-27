@@ -105,6 +105,10 @@ a.sidebar-link {
     border-left: 3px solid transparent;
 }
 
+a.active{
+    background-color: #1a4a7c ;
+}
+
 .sidebar-link i,
 .dropdown-item i {
     font-size: 1.1rem;

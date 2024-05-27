@@ -1,18 +1,21 @@
 
-
 <div class="d-flex">
     <button id="toggle-btn" type="button">
         <i class="lni lni-grid-alt"></i>
     </button>
     <div class="sidebar-logo">
-        <a href="">CodzSword</a>
+    @auth
+
+        <a href="">{{ auth()->user()->name }}</a>
+
+    @endauth
     </div>
 </div>
 <ul class="sidebar-nav">
     @foreach (mysqlTables() as $key => $value)
 
     <li class="sidebar-item">
-        <a href="{{ url('/' . $page=strtolower($key)) }}" class="sidebar-link"><i class="lni lni-{{ $value }}"></i><span>{{ __($key) }}</span></a>
+        <a href="{{ url('/' . $page=strtolower($key)) }}" class="sidebar-link {{ str_contains(Route::currentRouteName().'.', strtolower($key)) ? 'active' : '' }}"><i class="lni lni-{{ $value }}"></i><span>{{ __($key) }}</span></a>
     </li>
 
     @endforeach
@@ -23,6 +26,7 @@
     <li class="sidebar-item">
         <a href="" class="sidebar-link"><i class="lni lni-agenda"></i><span>Profile</span></a>
     </li> --}}
+    @if(!auth())
     <li class="sidebar-item">
         <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#auth" aria-expanded="false" aria-controls="auth"><i class="lni lni-protection"></i><span>Auth</span></a>
         <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -34,6 +38,7 @@
             </li>
         </ul>
     </li>
+    @endif
     <li class="sidebar-item">
         <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#multi" aria-expanded="false" aria-controls="multi"><i class="lni lni-agenda"></i><span>Multi Level</span></a>
         <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">

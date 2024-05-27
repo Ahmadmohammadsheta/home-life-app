@@ -8,7 +8,7 @@ PHP: [
                 redirect()->route($this->uriRoute.'.show', ['category' => $data->parent_id])->with(['session' => 'success', 'message' => 'تم الاضافة بنجاح'])
             );
 
-    - all swith cases working 
+    - all switch cases working 
     switch (true) {
         case (request()->wantsJson()):
             $return = response()->json($data);
@@ -49,7 +49,7 @@ setup: [
 
 routes: [
     - group
-    - prifex
+    - prefix
     - namespace
     - name : as
     - controller
@@ -61,11 +61,14 @@ routes: [
 
 Laravel helper methods: [
     - Route::currentRouteName()
-    - request()->route()->
+    - request()->route() // return route data
     - $id = (request()->route('category'));
-    - illunenat/constract/.... // use any interface
-    - // to make the table pagination using bootstrap css becausee the default using tailwind
+    - Illuminate/contracts/.... // use any interface
+    - // to make the table pagination using bootstrap css because the default using tailwind
         Paginator::useBootstrapFive();
+
+    - fill($request->all()) // to fill the object values
+        ->save(); // if exist will update else will create
 ]
 
 Laravel: [
@@ -78,10 +81,10 @@ AppServiceProvider : [
             Validator::extend('filter', function($attribute, $value, $params){
                 return in_array($value, $params);
             }, 
-        ]"The value is prohibted");
+        ]"The value is prohibited");
 
         [
-            // to make the table pagination using bootstrap css becausee the default using tailwind
+            // to make the table pagination using bootstrap css because the default using tailwind
             Paginator::useBootstrapFive();
             // Paginator::defaultView('crud.pagination.custom')
         ];
@@ -113,7 +116,13 @@ migrations: [
         - before // not working
         - $table->foreignId('parent_id_id'->constrained('categories', 'id');
         - $table->foreignId('parent_id')->nullable(must be before any another modifier)->constrained('categories', 'id')
-             ->nullOnDelet(or)->cascadeOnDelete(or)->restrictOnDelete();
+             ->nullOnDelete(or)->cascadeOnDelete(or)->restrictOnDelete();
+        
+        - $table->dropConstrainedForeignId('provider_id'); to drop the column with Delete       - after another column // done;
+        - before // not working
+        - $table->foreignId('parent_id_id'->constrained('categories', 'id');
+        - $table->foreignId('parent_id')->nullable(must be before any another modifier)->constrained('categories', 'id')
+             ->nullOnDelete(or)->cascadeOnDelete(or)->restrictOnDelete();
         
         - $table->dropConstrainedForeignId('provider_id'); to drop the column with the relation
     ]

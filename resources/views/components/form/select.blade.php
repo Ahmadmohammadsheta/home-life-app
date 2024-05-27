@@ -19,7 +19,8 @@
 
         <option class=" @error($name) is-invalid @enderror" value="{{ $value->id }}"
             @selected($selected == $value->id)
-            >{{ $value->name }}
+            >
+            {{ $value->name }}
         </option>
 
         @endforeach
