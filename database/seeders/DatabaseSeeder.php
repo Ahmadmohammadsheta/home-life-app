@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -28,10 +30,10 @@ class DatabaseSeeder extends Seeder
         'project-create',
         'project-edit',
         'project-delete',
-        'categoty-list',
-        'categoty-create',
-        'categoty-edit',
-        'categoty-delete',
+        'category-list',
+        'category-create',
+        'category-edit',
+        'category-delete',
         'position-list',
         'position-create',
         'position-edit',
@@ -91,14 +93,17 @@ class DatabaseSeeder extends Seeder
         // $user->assignRole([$role->id]);
 
         // Create admin User and assign the role to him.
+        if (!User::whereEmail('admin@example.com')->first()) {
+            User::create([
+                'name' => 'admin',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('12345678'),
+                'email_verified_at' => '2024-03-14 14:43:51',
+                // 'created_by' => 1,
+            ]);
+        }
 
-        User::create([
-            'name' => 'admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('12345678'),
-            'email_verified_at' => '2024-03-14 14:43:51',
-            // 'created_by' => 1,
-        ]);
+        Category::factory(2)->create();
     }
 
 }

@@ -114,6 +114,8 @@ migrations: [
         - $table->foreignId('parent_id_id'->constrained('categories', 'id');
         - $table->foreignId('parent_id')->nullable(must be before any another modifier)->constrained('categories', 'id')
              ->nullOnDelet(or)->cascadeOnDelete(or)->restrictOnDelete();
+        
+        - $table->dropConstrainedForeignId('provider_id'); to drop the column with the relation
     ]
 ]
 
@@ -138,6 +140,10 @@ Models: [
             'user_id' => auth()->id()), true);
             parent::__construct($attributes);
         }
+
+
+    - من مساوئ المودل تخزين داتا العلاقات عند استخدام ويز في علاقة بيلونجس تو في الميموري مما يستهلك مساحة كبيرة من السيرفر لذلك يفضل استخدام ال جوين في المشاريع الكبيرة و ايضا يفضل عدم استخدهم ويز في ال هاز ماني
+    - عند عدم استخدام ويز في علاقة بيلونجس تو فان كل لفة فورايش تقوم بريكويست جديد لذلك نستخدماها
     
 ]
 
