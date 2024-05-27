@@ -18,11 +18,11 @@ class CategoryResource extends JsonResource
     {
         $data = parent::toArray($request);
 
-        $data['is_parent'] = $this->is_parent == 1 ? 'True' : 'False';
-        $data['parent'] = new CategoryResource($this->parent);
+        // $data['is_parent'] = $this->is_parent == 1 ? 'True' : 'False';
+        // $data['parent'] = new CategoryResource($this->parent);
         $data['type'] = $this->type;
-        $data['typeName'] = $this->typeName;
-        $data['relations'] = $this->with($request);
+        // $data['typeName'] = $this->typeName;
+        // $data['relations'] = $this->with($request);
 
 
         return $data;

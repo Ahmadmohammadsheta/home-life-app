@@ -91,8 +91,8 @@ Trait SqlDataRetrievable
 
         foreach ($filteredColumns as $filteredColumn) {
             $columnDataType = Schema::getColumnType($this->tableName($modelInstance), $filteredColumn);
-            $columsWithDataTypes[] = (["name" => $filteredColumn, "type" => $columnDataType]);
+            $columnsWithDataTypes[] = (["name" => $filteredColumn, "type" => $columnDataType]);
         }
-        return ($columsWithDataTypes);
+        return ($columnsWithDataTypes);
     }
 }
