@@ -26,18 +26,29 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
 
 
    /**
+    * @param int $id
+    * @return string
+    */
+    public function allParentsIds(int $id): string
+    {
+        if (isset($id)) {
+            $parent = $this->find($id);
+            $all_parents_ids =
+                $parent->all_parents_ids != null ?
+                implode(',', [$parent->all_parents_ids, $parent->id]) :
+                $id;
+        }
+        return ($all_parents_ids);
+    }
+
+   /**
     * @param array $attributes
     * @return Model
     */
     public function create(array $attributes): Model
     {
         // if the new category is a child
-        if (isset($attributes['id'])) {
-
-            $parent = $this->find($attributes['id']);
-
-            $attributes['all_parents_ids'] = $parent->all_parents_ids != null ? implode(',', [$parent->all_parents_ids, $parent->id]) : $attributes['id'];
-        }
+        $attributes['all_parents_ids'] = $this->allParentsIds($attributes['parent_id']);
 
         isset($attributes['is_parent']) ?: $attributes['is_parent'] = false;
 
@@ -57,10 +68,7 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
             $this->deleteImage($data['image']); // Working only if file exists
         }
 
-        if (isset($attributes['parent_id'])) {
-            $parent = $this->find($attributes['parent_id']);
-            $attributes['all_parents_ids'] = $parent->all_parents_ids != null ? implode(',', [$parent->all_parents_ids, $parent->id]) : $attributes['parent_id'];
-        }
+        $attributes['all_parents_ids'] = $this->allParentsIds($attributes['parent_id']);
 
         isset($attributes['is_parent']) ?: $attributes['is_parent'] = false;
 
