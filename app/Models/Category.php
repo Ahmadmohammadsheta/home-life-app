@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Http\Traits\ImageProccessingTrait;
+use App\Http\Traits\ImageProcessingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Scopes\Category\OrderByIdScope;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    use HasFactory, ImageProccessingTrait, SoftDeletes;
+    use HasFactory, ImageProcessingTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -53,7 +54,10 @@ class Category extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'parent_id');
+        return $this->belongsTo(Category::class, 'parent_id')
+            ->withDefault([
+                'name' => '-', // to return default data if the object is null
+        ]); // to return an empty object to prevent the nullable return
     }
 
     public function children(): HasMany
@@ -71,9 +75,23 @@ class Category extends Model
      */
     public function type(): BelongsTo
     {
-        return $this->belongsTo(Type::class, 'type_id', 'id');
+        return $this->belongsTo(Type::class); // to return an empty object to prevent the nullable return;
     }
 
+    /**
+     * Provider Global Scope
+     */
+    protected static function booted() {
+        // with closure function
+        static::addGlobalScope('parents', function(Builder $query) {
+            $query->where('categories.parent_id', '>=', 0);
+        });
+
+        // with Scope Class
+        // static::addGlobalScope('OrderById', new OrderByIdScope());
+        // or
+        static::addGlobalScope(OrderByIdScope::class);
+    }
     /**
      * Filter Scope
      */
@@ -176,7 +194,7 @@ class Category extends Model
     protected function parentName(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $this->parent_id == null ? 'Non' : $this->parent->name,
+            get: fn ($value) => $this->parent->name,
         );
     }
 
