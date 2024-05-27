@@ -47,12 +47,9 @@ class CategoryService
                 'categories.*',
                 'parents.name as parent_name'
             ])
-            // ->select('categories.*')
-            // ->addSelect(DB::raw('(SELECT COUNT(*) FROM categories WHERE parent_id = categories.id ) as categories_count'))
-            ->selectRaw('(SELECT COUNT(*) FROM categories WHERE parent_id = categories.id ) as categories_count')
             ->filter($attributes)
             ->isParentDesc()
-            ->paginate($total)
+            ->paginate(29)
         );
 
     }
