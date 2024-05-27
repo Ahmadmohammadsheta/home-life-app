@@ -21,7 +21,11 @@ class TypeController extends Controller
      */
     public function index()
     {
-        return view('crud.index', ['data' => $this->repository->all(), 'columns' => $this->repository->columns()]);
+        $data = $this->repository->all();
+
+        return request()->wantsJson() ?
+        response()->json($data) :
+        view('crud.index', $data, ['columns' => $this->repository->columns()]);
     }
 
     /**
@@ -29,7 +33,7 @@ class TypeController extends Controller
      */
     public function create()
     {
-        return view('crud.create', ['type' => new Type(),  'columsWithDataTypes'=>$this->repository->columnsTypes()]);
+        return view('crud.create', ['type' => new Type(),  'columnsWithDataTypes'=>$this->repository->columnsTypes()]);
     }
 
     /**
@@ -58,7 +62,7 @@ class TypeController extends Controller
      */
     public function edit(Type $type)
     {
-        return view('crud.edit', [$this->additionalData['modelObjectName'] => $type, 'columsWithDataTypes'=> $this->repository->columnsTypes()]);
+        return view('crud.edit', [$this->additionalData['modelObjectName'] => $type, 'columnsWithDataTypes'=> $this->repository->columnsTypes()]);
     }
 
     /**

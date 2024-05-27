@@ -43,6 +43,7 @@ $(document).ready(function() {
     if (categoryId) {
         $.ajax({
             url: "{{ URL::to('categories') }}/" + categoryId,
+            // url: {{ route('categories.show', ['category' => $id]) }},
             type: "GET",
             dataType: "json",
             success: function(data) {
@@ -62,6 +63,23 @@ $(document).ready(function() {
     } else {
         console.log('AJAX load did not work');
     }
+
+    $.ajax({
+            url: "{{ URL::to('types') }}",
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+
+                var selectedTypeId = $('select[name="type_id"]').val();
+
+                $.each(data, function(index, value) {
+                    if (value.id != selectedTypeId) {
+                        $('select[name="type_id"]').append('<option value="' +
+                        value.id + '">' + value.name + '</option>');
+                    }
+                });
+            }
+        });
 
 });
 //__________________________________________________________________________________________________________
