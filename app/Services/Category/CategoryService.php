@@ -79,7 +79,7 @@ class CategoryService
             'thisRelatedThings' => CategoryResource::collection($category->things()->paginate()), // get this children data has no parent (this things)
             'allParentsForThisSon' => $this->parentService->allParentsForThisSon($category) // get this children data has no parent (this things)
         ];
-        return ($data);
+        return $data;
     }
 
    /**
