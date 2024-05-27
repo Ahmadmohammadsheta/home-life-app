@@ -160,7 +160,8 @@ return [
          * Package Service Providers...
          */
         // AMA-dribbble service
-         \SocialiteProviders\Manager\ServiceProvider::class, // add
+        \SocialiteProviders\Manager\ServiceProvider::class, // add
+        \Bezhanov\Faker\Laravel\FakerServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -171,7 +172,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         // AMA-RepositoryServiceProvider::class
         App\Providers\RepositoryServiceProvider::class,
-        
+
         App\Providers\HelperServiceProvider::class,
     ])->toArray(),
 
