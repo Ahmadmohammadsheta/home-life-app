@@ -32,11 +32,11 @@ class TypeController extends Controller
             //     }
             // ])
             // ->paginate(29);
-        $data = $this->repository->all();
+        $data = $this->repository->paginate();
 
         return request()->wantsJson() ?
         response()->json($data) :
-        view('crud.index', $data, ['columns' => $this->repository->columns()]);
+        view('crud.index', ['data' => $data], ['columns' => $this->repository->columns()]);
     }
 
     /**

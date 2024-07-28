@@ -34,7 +34,7 @@ class CategoryController extends Controller
     public function index()
     {
         $request = request();
-
+        
         $data = CategoryResource::collection($this->service->indexWithParentName($request->all(), 7));
         // dd($data);
         return request()->wantsJson() ? response()->json($data) :
@@ -97,7 +97,7 @@ class CategoryController extends Controller
         $data = $this->repository->edit($category->id, $request->validated());
 
         return $request->wantsJson() ?
-        $this->sendResponse($data, "تم التعديل بنجاح", 200) :
+        response()->json($data, "تم التعديل بنجاح", 200) :
         redirect()->route($this->uriRoute.'.show',
             [
                 $this->additionalData['modelObjectName'] => $data->parent_id ?: $data->id

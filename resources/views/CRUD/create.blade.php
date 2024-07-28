@@ -43,7 +43,6 @@ $(document).ready(function() {
     if (categoryId) {
         $.ajax({
             url: "{{ URL::to('categories') }}/" + categoryId,
-            // url: {{ route('categories.show', ['category' => $id]) }},
             type: "GET",
             dataType: "json",
             success: function(data) {

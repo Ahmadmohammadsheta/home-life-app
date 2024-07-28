@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Http\Controllers;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +25,11 @@ Route::middleware('auth')->group(function () {
 
     //-----------------------------------------------------------------------------------------------------------
     Route::resource('/types', 'TypeController');
+    Route::controller(TypeController::class)->group(function () {
+        Route::get('types/trashed', 'trashed')->name('types.trashed');
+        Route::put('types/{category}/restore', 'restore')->name('types.restore')->where('category', '\d+'); // \d its mean any digit + mean more 111111
+        Route::delete('types/{category}/force-delete', 'forceDelete')->name('types.force-delete');
+    });
     //______________________________________________________________________________________________________________________
 
     //-----------------------------------------------------------------------------------------------------------

@@ -25,11 +25,21 @@ class TypeRepository extends BaseRepository implements TypeRepositoryInterface
     */
     public function columns(): array
     {
-        if (route('types.index')) {
-            $columns = $this->columnsAsKeysAndValues(new Type(), ['updated_at'], ['craeted_at' => 'CRAETED At']);
+        $data = [
+            'custom' => ['id', 'name'],
+            'columnsAsKeys' => ['id', 'name'],
+            'excepted' => [],
+        ];
+        if (route('categories.index')) {
+            $columns = $this->columnsAsKeysAndValues(new Type(), $data);
         } else {
-            $columns = $this->columnsAsKeysAndValues(new Type(), ['updated_at'], ['user_id' => 'USER NAME', 'type_id' => 'TYPE NAME', 'craeted_at' => 'CRAETED At']);
+            $columns = $this->columnsAsKeysAndValues(new Type(), $data);
         }
+        // if (route('types.index')) {
+        //     $columns = $this->columnsAsKeysAndValues(new Type(), ['updated_at'], ['created_at' => 'CREATED At']);
+        // } else {
+        //     $columns = $this->columnsAsKeysAndValues(new Type(), ['updated_at'], ['user_id' => 'USER NAME', 'type_id' => 'TYPE NAME', 'created_at' => 'CRAETED At']);
+        // }
 
         return $columns;
     }
